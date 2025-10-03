@@ -143,6 +143,55 @@
             </div>
         </section>
 
+        <!-- 2. TikTok Comment Section Photos (Renamed and new content) -->
+        <section id="tiktok-comments" class="py-16">
+            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
+                | 02. TikTok Comment Section Photos |
+            </h3>
+            
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
+                A curated selection of images perfect for comment section replies or short-form reactions.
+            </p>
+
+            <div id="tiktok-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <!-- TikTok Comment Photos will be rendered here -->
+            </div>
+            <p id="tiktokCount" class="text-right text-xs mt-4 text-gray-500"></p>
+        </section>
+
+        <!-- 3. Wallpaper Gallery (Original Chosen Wallpapers content, moved here) -->
+        <section id="wallpaper-gallery" class="py-16">
+            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
+                | 03. Wallpaper Gallery |
+            </h3>
+            
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
+                High-resolution, high-quality images suitable for desktop and mobile backgrounds.
+            </p>
+
+            <div id="wallpaper-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <!-- Wallpapers will be rendered here -->
+            </div>
+            <p id="wallpaperCount" class="text-right text-xs mt-4 text-gray-500"></p>
+        </section>
+
+        <!-- 4. Recommended PFPs (New Section) -->
+        <section id="pfp-gallery" class="py-16">
+            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
+                | 04. Recommended PFPs |
+            </h3>
+            
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
+                Optimized, high-impact images suitable for profile pictures across all social media platforms.
+            </p>
+
+            <!-- Using a more compact 4-column layout for PFPs -->
+            <div id="pfp-showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <!-- PFPs will be rendered here -->
+            </div>
+            <p id="pfpCount" class="text-right text-xs mt-4 text-gray-500"></p>
+        </section>
+
     </main>
 
     <!-- Footer -->
@@ -157,13 +206,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-            // --- OWNER PHOTO DATA (Edit this array to update the showcase) ---
+            // --- PHOTO DATA DEFINITIONS ---
+
+            // 1. Showcase Photos (Owner-Defined Portfolio)
             const ownerPhotos = [
-                // TikTok Avatar (PFP) - UNSTABLE LINK
-                { 
-                    url: "https://p16-pu-sign-no.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/c915db3914bdd4ab0e87a3b1aeb6c8c1~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=10399&refresh_token=62171172&x-expires=1759597200&x-signature=MQeFpJ9zSqltgxyE1tdZvmDvWhQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=no1a", 
-                    alt: "Curated Portfolio Piece" 
-                },
                 // Jujutsu Kaisen image - MAY BE UNSTABLE
                 { 
                     url: "https://images.mein-mmo.de/medien/2024/08/Jujutsu-Kaisen-Titel-title-1-780x438.jpg", 
@@ -195,43 +241,98 @@
                     alt: "Curated Portfolio Piece (Nissan GT-R NISMO)"
                 }
             ];
-            
-            // --- Gallery Rendering Function ---
-            const galleryContainer = document.getElementById('showcase');
-            const photoCountDisplay = document.getElementById('photoCount');
 
-            // Logic for empty portfolio display
-            if (ownerPhotos.length === 0) {
-                galleryContainer.innerHTML = `
-                    <div class="col-span-full text-center py-10 rounded-lg border-2 border-dashed border-gray-700 bg-gray-900">
-                        <p class="text-xl text-white font-semibold mb-2">Portfolio Feed Cleared.</p>
-                        <p class="text-gray-400">Ready for new input. Add photo URLs to the 'ownerPhotos' array in the script block.</p>
-                    </div>
-                `;
-            } else {
-                galleryContainer.innerHTML = ''; // Clear the placeholder if we have content
-                ownerPhotos.forEach(photo => {
-                    const photoHtml = `
-                        <div class="relative aspect-square rounded-lg overflow-hidden shadow-lg border border-gray-700">
-                            <img 
-                                src="${photo.url}" 
-                                onerror="this.src='https://placehold.co/400x400/000000/ffffff?text=IMAGE+FAIL';"
-                                alt="${photo.alt}" 
-                                class="w-full h-full object-cover transition duration-300"
-                            >
+            // 2. TikTok Comment Section Photos (NEW DATA)
+            const tiktokCommentPhotos = [
+                // Only keeping the user's requested GIF.
+                { 
+                    url: "https://media1.tenor.com/m/9SmwhhaifUkAAAAC/mimimi-clash-royale.gif", 
+                    alt: "Clash Royale Mimimi Reaction GIF"
+                }
+            ];
+
+
+            // 3. Wallpaper Gallery (Moved/Renamed from Chosen Wallpapers)
+            const wallpaperPhotos = [
+                // Only keeping the user's requested wallpaper.
+                { 
+                    url: "https://external-preview.redd.it/Hb7ZzIVajWsGlWkhNISeMOyL_hX8-9AuJWoBrey6eKI.jpg?width=640&crop=smart&auto=webp&s=58a25856e693e6e6b74b17454a8d92b18073b214", 
+                    alt: "New Dark Aesthetic Reddit Wallpaper" 
+                }
+            ];
+
+            // 4. Recommended PFPs (NEW DATA)
+            const recommendedPFPs = [
+                // PFP A now uses the TikTok Avatar image, replacing the 'bytestrom' photo
+                { 
+                    url: "https://p16-pu-sign-no.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/c915db3914bdd4ab0e87a3b1aeb6c8c1~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=10399&refresh_token=62171172&x-expires=1759597200&x-signature=MQeFpJ9zSqltgxyE1tdZvmDvWhQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=no1a", 
+                    alt: "Recommended PFP A (TikTok Avatar)" 
+                },
+                // PFP B updated with the new Porsche 911 GT3 R URL
+                { 
+                    url: "https://res.cloudinary.com/dmwcbhehi/image/upload/c_thumb,w_3840,g_auto/f_auto/q_auto/v1/911_GT3_R_Scrollsection_01-tradition_dhzmuw?_a=BAVAZGDX0", 
+                    alt: "Recommended PFP B (Porsche 911 GT3 R)" 
+                },
+                // PFP C updated with the BMW Fisheye URL
+                { 
+                    url: "https://cdn.pfps.gg/pfps/2855-bmw-fisheye.png", 
+                    alt: "Recommended PFP C (BMW Fisheye)" 
+                },
+                // PFP D updated with the new Dark Aesthetic Car URL
+                { 
+                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvYYq471rW44TZtr8YF4wNKWD1IyRr5fJZtQ&s", 
+                    alt: "Recommended PFP D (Dark Aesthetic Car)" 
+                }
+                // PFP E has been removed as requested.
+            ];
+            
+            // --- GALLERY RENDERING FUNCTION ---
+
+            function renderGallery(photos, containerId, countId) {
+                const container = document.getElementById(containerId);
+                const countDisplay = document.getElementById(countId);
+                
+                if (!container) return; // Exit if container doesn't exist
+
+                if (photos.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-10 rounded-lg border-2 border-dashed border-gray-700 bg-gray-900">
+                            <p class="text-xl text-white font-semibold mb-2">Content Feed Cleared.</p>
+                            <p class="text-gray-400">Add photo URLs to the associated data array in the script block.</p>
                         </div>
                     `;
-                    galleryContainer.innerHTML += photoHtml;
-                });
+                    if (countDisplay) {
+                        countDisplay.textContent = "No content currently loaded. Ready for import.";
+                    }
+                } else {
+                    container.innerHTML = ''; // Clear existing content
+                    photos.forEach(photo => {
+                        const photoHtml = `
+                            <div class="relative aspect-square rounded-lg overflow-hidden studio-card border border-gray-700">
+                                <img 
+                                    src="${photo.url}" 
+                                    onerror="this.src='https://placehold.co/400x400/000000/ffffff?text=IMAGE+FAIL';"
+                                    alt="${photo.alt}" 
+                                    class="w-full h-full object-cover transition duration-300 hover:scale-[1.03]"
+                                >
+                            </div>
+                        `;
+                        container.innerHTML += photoHtml;
+                    });
+                    if (countDisplay) {
+                        countDisplay.textContent = `Showing ${photos.length} curated works.`;
+                    }
+                }
             }
 
-            photoCountDisplay.textContent = ownerPhotos.length === 0 
-                ? "No content currently loaded. Ready for import."
-                : `Showing ${ownerPhotos.length} curated works.`;
+            // Render all galleries
+            renderGallery(ownerPhotos, 'showcase', 'photoCount');
+            renderGallery(tiktokCommentPhotos, 'tiktok-showcase', 'tiktokCount');
+            renderGallery(wallpaperPhotos, 'wallpaper-showcase', 'wallpaperCount');
+            renderGallery(recommendedPFPs, 'pfp-showcase', 'pfpCount');
 
 
             // --- Video Embed Script Loader ---
-            // Loads the TikTok embed library after the page is set up
             function loadTikTokEmbed() {
                 const script = document.createElement('script');
                 script.src = 'https://www.tiktok.com/embed.js';
