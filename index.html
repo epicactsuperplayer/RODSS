@@ -1,84 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.googletagmanager.com https://www.tiktok.com;
-  connect-src 'self' https://www.google-analytics.com https://*.google.com;
-  img-src 'self' data: https://i.pinimg.com https://media.tenor.com https://images.mein-mmo.de https://i.redd.it https://encrypted-tbn0.gstatic.com https://old-wiki.warthunder.com https://res.cloudinary.com https://cdn.pfps.gg;
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  font-src 'self' https://fonts.gstatic.com;
-  frame-src https://www.tiktok.com;
-">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RODSS </title>
-    <!-- Favicon updated: Using a high-contrast SVG data URI (White 'R' on Black background) for maximum sharpness and visibility, bypassing caching issues. -->
+    <title>RODSS</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22black%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2285%25%22%20style%3D%22font-size%3A%2080px%3B%20font-weight%3A%20900%3B%20fill%3A%20white%3B%20font-family%3A%20sans-serif%3B%22%20text-anchor%3D%22middle%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E">
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <style>
-        /*
-         * Custom CSS for a high-contrast, black-and-white aesthetic.
-         */
-        :root {
-            --accent-color: #ffffff; /* White shine/accent */
-            --bg-color: #000000; /* Black background */
-            --card-color: #1a1a1a; /* Very dark gray for card background */
-            font-family: 'Inter', sans-serif;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: #e5e7eb; /* Light Gray text for readability */
-            transition: background-color 0.3s ease;
-        }
-
-        /* The title with the shining white effect on black */
-        .studio-title-glow {
-            color: var(--accent-color);
-            /* Strong white shine effect */
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.5);
-        }
-
-        /* Custom scrollbar using a light gray accent */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: #9ca3af; /* Light gray for scrollbar */
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background-color: #1f2937; /* Darker gray track */
-        }
-
-        /* Custom vertical aspect ratio for TikTok simulation */
-        .tiktok-aspect {
-            aspect-ratio: 9/16;
-            width: 100%;
-            min-height: 400px;
-            max-height: 70vh;
-        }
-        
-        /* Bespoke card styling: dark background with subtle white shadow/border */
-        .studio-card {
-            background-color: var(--card-color);
-            border: 1px solid #374151; /* Dark gray border */
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05); /* Subtle white shadow */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .studio-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 0.1);
-        }
-    </style>
-
-    <!-- CONTENT SECURITY POLICY FIX: Explicitly allow scripts and connections for GA4. -->
-    <!-- Note: If your Vercel server configuration already sets a strict CSP header, this meta tag might be ignored. -->
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdn.tailwindcss.com https://www.tiktok.com; connect-src 'self' https://www.google-analytics.com https://*.google.com;">
     
-    <!-- Google tag (gtag.js) - Added for tracking ID G-QCZ87HM440 -->
+    <!-- FIXED CSP: More permissive to allow all required scripts -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.googletagmanager.com https://www.tiktok.com https://cdn.consentmanager.net; connect-src 'self' https://www.google-analytics.com https://*.google.com https://d.delivery.consentmanager.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: http:; frame-src https://www.tiktok.com;">
+    
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCZ87HM440"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -86,29 +17,70 @@
       gtag('js', new Date());
       gtag('config', 'G-QCZ87HM440');
     </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-color: #ffffff;
+            --bg-color: #000000;
+            --card-color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: #e5e7eb;
+            transition: background-color 0.3s ease;
+        }
+        .studio-title-glow {
+            color: var(--accent-color);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: #1f2937;
+        }
+        .tiktok-aspect {
+            aspect-ratio: 9/16;
+            width: 100%;
+            min-height: 400px;
+            max-height: 70vh;
+        }
+        .studio-card {
+            background-color: var(--card-color);
+            border: 1px solid #374151;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .studio-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </head>
 <body class="min-h-screen">
 
-  <script type="text/javascript" data-cmp-ab="1" 
-      src="https://cdn.consentmanager.net/delivery/autoblocking/509cf33812608.js" data-cmp-
-      host="d.delivery.consentmanager.net" data-cmp-cdn="cdn.consentmanager.net" data-cmp-codesrc="16"></script>
+    <!-- FIXED: Consent Manager Script (removed line break in attribute) -->
+    <script type="text/javascript" data-cmp-ab="1" src="https://cdn.consentmanager.net/delivery/autoblocking/509cf33812608.js" data-cmp-host="d.delivery.consentmanager.net" data-cmp-cdn="cdn.consentmanager.net" data-cmp-codesrc="16"></script>
 
-     <!-- Header / Navigation - ONLY THE SHINING LOGO REMAINS -->
     <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-sm shadow-md p-4 border-b border-gray-800">
         <div class="max-w-7xl mx-auto flex justify-center items-center">
             <h1 class="text-3xl font-extrabold tracking-widest uppercase studio-title-glow text-white">
                 R O D S S
             </h1>
-            <!-- Navigation links and mobile button removed -->
         </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto p-4 md:p-8">
 
-        <!-- RODSS Introduction -->
         <section class="text-center py-16">
-            <h2 class="5xl md:text-7xl font-black mb-4 tracking-tighter text-white">
+            <h2 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white">
                 <span class="text-gray-200">Studio Output Video</span>
                 <span class="studio-title-glow text-white">&</span>
                 <span class="text-gray-200">Creative Picture gallery</span>
@@ -118,7 +90,6 @@
             </p>
         </section>
 
-        <!-- 1. Creative Command Center (Dual System) -->
         <section id="command-center" class="py-16">
             <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
                 | 01. Live Output Feeds |
@@ -126,31 +97,27 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 
-                <!-- System A: TikTok Video (Vertical Output) -->
                 <div class="lg:col-span-1 studio-card rounded-xl p-6 flex flex-col items-center">
                     <div class="flex items-center space-x-3 mb-6">
                         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 3H8a2 2 0 00-2 2v14a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2zM8 1h8a4 4 0 014 4v14a4 4 0 01-4 4H8a4 4 0 01-4-4V5a4 4 0 014-4zM12 18a1 1 0 100-2 1 1 0 000 2z"/></svg>
                         <h4 class="text-2xl font-bold text-white">Video Feed: @epicactsuperplayer</h4>
                     </div>
 
-                    <!-- TikTok Embed Blockquote: This is where the script will inject the playable video player -->
+                    <!-- FIXED: TikTok Embed with proper structure -->
                     <div class="tiktok-aspect w-full flex items-center justify-center rounded-xl shadow-2xl bg-black relative overflow-hidden">
                         <blockquote 
                             class="tiktok-embed" 
                             cite="https://www.tiktok.com/@epicactsuperplayer/video/7557689759724735766" 
                             data-video-id="7557689759724735766"
-                            style="max-width: 605px; min-width: 325px;" 
+                            style="max-width: 605px; min-width: 325px;"
                         >
                             <section>
-                                <!-- Loading placeholder -->
-                                <p class="text-white text-center p-4">Loading playable video...</p>
+                                <a target="_blank" title="@epicactsuperplayer" href="https://www.tiktok.com/@epicactsuperplayer?refer=embed">@epicactsuperplayer</a>
                             </section>
                         </blockquote>
                     </div>
-                    
                 </div>
 
-                <!-- System B: Photo Showcase (Owner-Defined Portfolio) -->
                 <div class="lg:col-span-2 studio-card rounded-xl p-6">
                     <div class="flex items-center space-x-3 mb-6">
                         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1zM5 17h14V7H5v10zm3.5-8a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM15 15.5l-3-3-4 4v1h7l-3-2z"/></svg>
@@ -161,15 +128,12 @@
                         This gallery reflects photos manually uploaded by the owner. New additions populate instantly.
                     </p>
 
-                    <div id="showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                        <!-- Photos will be generated here by JavaScript from the ownerPhotos array -->
-                    </div>
+                    <div id="showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
                     <p id="photoCount" class="text-right text-xs mt-4 text-gray-500"></p>
                 </div>
             </div>
         </section>
 
-        <!-- 2. TikTok Comment Section Photos (Renamed and new content) -->
         <section id="tiktok-comments" class="py-16">
             <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
                 | 02. TikTok Comment Section Photos |
@@ -179,13 +143,10 @@
                 A curated selection of images perfect for comment section replies or short-form reactions.
             </p>
 
-            <div id="tiktok-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                <!-- TikTok Comment Photos will be rendered here -->
-            </div>
+            <div id="tiktok-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
             <p id="tiktokCount" class="text-right text-xs mt-4 text-gray-500"></p>
         </section>
 
-        <!-- 3. Wallpaper Gallery (Original Chosen Wallpapers content, moved here) -->
         <section id="wallpaper-gallery" class="py-16">
             <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
                 | 03. Wallpaper Gallery |
@@ -195,13 +156,10 @@
                 High-resolution, high-quality images suitable for desktop and mobile backgrounds.
             </p>
 
-            <div id="wallpaper-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                <!-- Wallpapers will be rendered here -->
-            </div>
-            <p id="wallpaperCount" class="text-right text-xs mt-4 flocked-gray-500"></p>
+            <div id="wallpaper-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
+            <p id="wallpaperCount" class="text-right text-xs mt-4 text-gray-500"></p>
         </section>
 
-        <!-- 4. Recommended PFPs (New Section) -->
         <section id="pfp-gallery" class="py-16">
             <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
                 | 04. Recommended PFPs |
@@ -211,32 +169,24 @@
                 Optimized, high-impact images suitable for profile pictures across all social media platforms.
             </p>
 
-            <!-- Using a more compact 4-column layout for PFPs -->
-            <div id="pfp-showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <!-- PFPs will be rendered here -->
-            </div>
+            <div id="pfp-showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
             <p id="pfpCount" class="text-right text-xs mt-4 text-gray-500"></p>
         </section>
 
     </main>
 
-    <!-- Footer -->
     <footer class="mt-16 p-6 border-t border-gray-800 text-center text-gray-500">
         <p>&copy; <span id="currentYear"></span> RODSS Studio. Realtime Output Dual System Architecture.</p>
         <p class="text-xs mt-1 text-gray-600">Made by Bytestorm</p>
         <p class="text-xs mt-1">Design optimized for mobile and command efficiency.</p>
     </footer>
 
-    <!-- JavaScript for Gallery Rendering and Video Embed Loading -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-            // --- PHOTO DATA DEFINITIONS ---
-
-            // 1. Showcase Photos (Owner-Defined Portfolio)
+            // Jujutsu Kaisen image - MAY BE UNSTABLE
             const ownerPhotos = [
-                // Jujutsu Kaisen image - MAY BE UNSTABLE
                 { 
                     url: "https://images.mein-mmo.de/medien/2024/08/Jujutsu-Kaisen-Titel-title-1-780x438.jpg", 
                     alt: "Curated Portfolio Piece" 
@@ -395,6 +345,7 @@
             ];
 
 
+
             // 3. Wallpaper Gallery (Moved/Renamed from Chosen Wallpapers)
             const wallpaperPhotos = [
                 // Only keeping the user's requested wallpaper.
@@ -438,14 +389,12 @@
                 }
                 // PFP E has been removed as requested.
             ];
-            
-            // --- GALLERY RENDERING FUNCTION ---
 
             function renderGallery(photos, containerId, countId) {
                 const container = document.getElementById(containerId);
                 const countDisplay = document.getElementById(countId);
                 
-                if (!container) return; // Exit if container doesn't exist
+                if (!container) return;
 
                 if (photos.length === 0) {
                     container.innerHTML = `
@@ -454,11 +403,9 @@
                             <p class="text-gray-400">Add photo URLs to the associated data array in the script block.</p>
                         </div>
                     `;
-                    if (countDisplay) {
-                        countDisplay.textContent = "No content currently loaded. Ready for import.";
-                    }
+                    if (countDisplay) countDisplay.textContent = "No content currently loaded. Ready for import.";
                 } else {
-                    container.innerHTML = ''; // Clear existing content
+                    container.innerHTML = '';
                     photos.forEach(photo => {
                         const photoHtml = `
                             <div class="relative aspect-square rounded-lg overflow-hidden studio-card border border-gray-700">
@@ -472,32 +419,29 @@
                         `;
                         container.innerHTML += photoHtml;
                     });
-                    if (countDisplay) {
-                        countDisplay.textContent = `Showing ${photos.length} curated works.`;
-                    }
+                    if (countDisplay) countDisplay.textContent = `Showing ${photos.length} curated works.`;
                 }
             }
 
-            // Render all galleries
             renderGallery(ownerPhotos, 'showcase', 'photoCount');
             renderGallery(tiktokCommentPhotos, 'tiktok-showcase', 'tiktokCount');
             renderGallery(wallpaperPhotos, 'wallpaper-showcase', 'wallpaperCount');
             renderGallery(recommendedPFPs, 'pfp-showcase', 'pfpCount');
 
-
-            // --- Video Embed Script Loader ---
+            // FIXED: Load TikTok embed script after page content is ready
             function loadTikTokEmbed() {
                 const script = document.createElement('script');
                 script.src = 'https://www.tiktok.com/embed.js';
                 script.async = true;
+                script.onload = () => console.log('TikTok embed script loaded');
+                script.onerror = () => console.error('Failed to load TikTok embed script');
                 document.body.appendChild(script);
             }
-            loadTikTokEmbed();
+            
+            // Add slight delay to ensure DOM is fully ready
+            setTimeout(loadTikTokEmbed, 100);
         });
     </script>
 
 </body>
-</html>
-
-
-
+    </html>
