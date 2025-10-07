@@ -65,6 +65,10 @@
         }
     </style>
 
+    <!-- CONTENT SECURITY POLICY FIX: Explicitly allow scripts and connections for GA4. -->
+    <!-- Note: If your Vercel server configuration already sets a strict CSP header, this meta tag might be ignored. -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdn.tailwindcss.com https://www.tiktok.com; connect-src 'self' https://www.google-analytics.com https://*.google.com;">
+    
     <!-- Google tag (gtag.js) - Added for tracking ID G-QCZ87HM440 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCZ87HM440"></script>
     <script>
@@ -307,7 +311,7 @@
              
                 //allofusaredead dont sybau
                 {
-                    url: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQa5CW59_oxYr3IhW2ak-kcUT_jTz4DRCd4pQfeo6hInfaSNiGZ",
+                    url: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQa5CW59_oxYr3IhI W2ak-kcUT_jTz4DRCd4pQfeo6hInfaSNiGZ",
                     alt: "all of us are dead dont sybau"
                 },
                 //Jisoo sybau
