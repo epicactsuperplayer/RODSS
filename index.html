@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RODSS</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22black%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2285%25%22%20style%3D%22font-size%3A%2080px%3B%20font-weight%3A%20900%3B%20fill%3A%20white%3B%20font-family%3A%20sans-serif%3B%22%20text-anchor%3D%22middle%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E">
+   <link rel="icon" type="image/png" href="https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA5L3Jhd3BpeGVsb2ZmaWNlNl9waG90b19vZl9wdW1wa2luX3dpdGhfYV93aXRjaF9oYXRfaXNvbGF0ZWRfb25fd183ZjY4Y2I4Yi01MjEyLTQ5ZWMtYjUxNy05ZmEzNGUwNWNiNDIucG5n.png">
     
     <!-- Option 2: Very Permissive CSP - Allows everything to work while maintaining baseline security -->
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src *; img-src * data: blob:; frame-src *; style-src * 'unsafe-inline'; font-src *; media-src * blob:;">
@@ -29,12 +29,12 @@
         }
         body {
             background-color: var(--bg-color);
-            color: #e5e7eb;
+            color: #e2e7e3;
             transition: background-color 0.3s ease;
         }
         .studio-title-glow {
             color: var(--accent-color);
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.5);
+            text-shadow: 0 0 5px rgba(226, 140, 10, 0.7), 0 0 15px rgba(226, 140, 10, 0.7);
         }
         ::-webkit-scrollbar {
             width: 8px;
@@ -81,9 +81,9 @@
 
         <section class="text-center py-16">
             <h2 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white">
-                <span class="text-gray-200">Studio Output Video</span>
+                <span class="text-orange-200">Studio Output Video</span>
                 <span class="studio-title-glow text-white">&</span>
-                <span class="text-gray-200">Creative Picture gallery</span>
+                <span class="text-red-200">Creative Picture gallery</span>
             </h2>
             <p class="text-xl text-gray-400 max-w-3xl mx-auto">
                 The **Realtime Output Dual System Studio** is engineered for seamless, multi-platform deployment, prioritizing speed and visual quality. This is the source.
@@ -91,7 +91,7 @@
         </section>
 
         <section id="command-center" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
+            <h3 class="text-4xl font-bold mb-10 text-center text-red border-b-2 border-gray-700 pb-4">
                 | 01. Live Output Feeds |
             </h3>
             
@@ -100,7 +100,7 @@
                 <div class="lg:col-span-1 studio-card rounded-xl p-6 flex flex-col items-center">
                     <div class="flex items-center space-x-3 mb-6">
                         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 3H8a2 2 0 00-2 2v14a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2zM8 1h8a4 4 0 014 4v14a4 4 0 01-4 4H8a4 4 0 01-4-4V5a4 4 0 014-4zM12 18a1 1 0 100-2 1 1 0 000 2z"/></svg>
-                        <h4 class="text-2xl font-bold text-white">Video Feed: @epicactsuperplayer</h4>
+                        <h4 class="text-2xl font-bold text-red">Video Feed: @epicactsuperplayer</h4>
                     </div>
 
                     <!-- TikTok Direct Iframe Embed with Error Detection -->
@@ -115,7 +115,7 @@
                             onload="console.log('✅ TikTok iframe loaded successfully')"
                             onerror="console.error('❌ TikTok iframe failed to load'); document.getElementById('tiktok-error').style.display='block';"
                         ></iframe>
-                        <div id="tiktok-error" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; text-align:center;">
+                        <div id="tiktok-error" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:rgb(224, 18, 18); text-align:center;">
                             <p>⚠️ TikTok video failed to load</p>
                             <p class="text-sm mt-2">Check console for details</p>
                         </div>
@@ -125,25 +125,25 @@
                 <div class="lg:col-span-2 studio-card rounded-xl p-6">
                     <div class="flex items-center space-x-3 mb-6">
                         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1zM5 17h14V7H5v10zm3.5-8a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM15 15.5l-3-3-4 4v1h7l-3-2z"/></svg>
-                        <h4 class="text-2xl font-bold text-white">Showcase Photos</h4>
+                        <h4 class="text-2xl font-bold text-red">Showcase Photos</h4>
                     </div>
                     
-                    <p class="text-sm text-gray-400 mb-4">
+                    <p class="text-sm text-orange-400 mb-4">
                         This gallery reflects photos manually uploaded by the owner. New additions populate instantly.
                     </p>
 
                     <div id="showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-                    <p id="photoCount" class="text-right text-xs mt-4 text-gray-500"></p>
+                    <p id="photoCount" class="text-right text-xs mt-4 text-red-500"></p>
                 </div>
             </div>
         </section>
 
         <section id="tiktok-comments" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
+            <h3 class="text-4xl font-bold mb-10 text-center text-red border-b-2 border-gray-700 pb-4">
                 | 02. TikTok Comment Section Photos |
             </h3>
             
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
+            <p class="text-lg text-orange-400 max-w-3xl mx-auto text-center mb-8">
                 A curated selection of images perfect for comment section replies or short-form reactions.
             </p>
 
@@ -152,11 +152,11 @@
         </section>
 
         <section id="wallpaper-gallery" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
+            <h3 class="text-4xl font-bold mb-10 text-center text-red border-b-2 border-gray-700 pb-4">
                 | 03. Wallpaper Gallery |
             </h3>
             
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
+            <p class="text-lg text-red-400 max-w-3xl mx-auto text-center mb-8">
                 High-resolution, high-quality images suitable for desktop and mobile backgrounds.
             </p>
 
@@ -165,11 +165,11 @@
         </section>
 
         <section id="pfp-gallery" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
+            <h3 class="text-4xl font-bold mb-10 text-center text-red border-b-2 border-gray-700 pb-4">
                 | 04. Recommended PFPs |
             </h3>
             
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
+            <p class="text-lg text-red-400 max-w-3xl mx-auto text-center mb-8">
                 Optimized, high-impact images suitable for profile pictures across all social media platforms.
             </p>
 
@@ -179,9 +179,9 @@
 
     </main>
 
-    <footer class="mt-16 p-6 border-t border-gray-800 text-center text-gray-500">
+    <footer class="mt-16 p-6 border-t border-gray-800 text-center text-red-500">
         <p>&copy; <span id="currentYear"></span> RODSS Studio. Realtime Output Dual System Architecture.</p>
-        <p class="text-xs mt-1 text-gray-600">Made by Bytestorm</p>
+        <p class="text-xs mt-1 text-orange-600">Made by Bytestorm</p>
         <p class="text-xs mt-1">Design optimized for mobile and command efficiency.</p>
     </footer>
 
@@ -408,7 +408,7 @@
                 if (photos.length === 0) {
                     container.innerHTML = `
                         <div class="col-span-full text-center py-10 rounded-lg border-2 border-dashed border-gray-700 bg-gray-900">
-                            <p class="text-xl text-white font-semibold mb-2">Content Feed Cleared.</p>
+                            <p class="text-xl text-red font-semibold mb-2">Content Feed Cleared.</p>
                             <p class="text-gray-400">Add photo URLs to the associated data array in the script block.</p>
                         </div>
                     `;
@@ -446,5 +446,3 @@
 
 </body>
 </html>
-
-
