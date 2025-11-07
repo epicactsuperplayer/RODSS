@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RODSS</title>
-   <link rel="icon" type="image/png" href="https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA5L3Jhd3BpeGVsb2ZmaWNlNl9waG90b19vZl9wdW1wa2luX3dpdGhfYV93aXRjaF9oYXRfaXNvbGF0ZWRfb25fd183ZjY4Y2I4Yi01MjEyLTQ5ZWMtYjUxNy05ZmEzNGUwNWNiNDIucG5n.png">
+    <title>RODSS | Realtime Output Dual System Studio</title>
+    <!-- Custom Icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22black%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2285%25%22%20style%3D%22font-size%3A%2080px%3B%20font-weight%3A%20900%3B%20fill%3A%20white%3B%20font-family%3A%20sans-serif%3B%22%20text-anchor%3D%22middle%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E">
     
-    <!-- Option 2: Very Permissive CSP - Allows everything to work while maintaining baseline security -->
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src *; img-src * data: blob:; frame-src *; style-src * 'unsafe-inline'; font-src *; media-src * blob:;">
-    
-    <!-- Google Analytics -->
+    <!-- Google Analytics (Kept as per your original file) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCZ87HM440"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -18,9 +16,11 @@
       gtag('config', 'G-QCZ87HM440');
     </script>
     
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
+        /* Base styles and variables */
         :root {
             --accent-color: #ffffff;
             --bg-color: #000000;
@@ -29,13 +29,14 @@
         }
         body {
             background-color: var(--bg-color);
-            color: #e2e7e3;
+            color: #e5e7eb;
             transition: background-color 0.3s ease;
         }
         .studio-title-glow {
             color: var(--accent-color);
-            text-shadow: 0 0 5px rgba(226, 140, 10, 0.7), 0 0 15px rgba(226, 140, 10, 0.7);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.5);
         }
+        /* Custom Scrollbar for dark theme */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -46,12 +47,14 @@
         ::-webkit-scrollbar-track {
             background-color: #1f2937;
         }
+        /* Aspect ratio specifically for the TikTok vertical video */
         .tiktok-aspect {
             aspect-ratio: 9/16;
             width: 100%;
             min-height: 400px;
             max-height: 70vh;
         }
+        /* Consistent card styling with hover effect */
         .studio-card {
             background-color: var(--card-color);
             border: 1px solid #374151;
@@ -66,9 +69,10 @@
 </head>
 <body class="min-h-screen">
 
-    <!-- FIXED: Consent Manager Script (removed line break in attribute) -->
+    <!-- Third-Party Consent Manager Script (Kept as per your original file) -->
     <script type="text/javascript" data-cmp-ab="1" src="https://cdn.consentmanager.net/delivery/autoblocking/509cf33812608.js" data-cmp-host="d.delivery.consentmanager.net" data-cmp-cdn="cdn.consentmanager.net" data-cmp-codesrc="16"></script>
 
+    <!-- Header / Navigation Bar -->
     <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-sm shadow-md p-4 border-b border-gray-800">
         <div class="max-w-7xl mx-auto flex justify-center items-center">
             <h1 class="text-3xl font-extrabold tracking-widest uppercase studio-title-glow text-white">
@@ -79,28 +83,32 @@
 
     <main class="max-w-7xl mx-auto p-4 md:p-8">
 
+        <!-- Hero Section -->
         <section class="text-center py-16">
             <h2 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white">
-                <span class="text-orange-200">Studio Output Video</span>
+                <span class="text-gray-200">Studio Output Video</span>
                 <span class="studio-title-glow text-white">&</span>
-                <span class="text-red-200">Creative Picture gallery</span>
+                <span class="text-gray-200">Creative Picture gallery</span>
             </h2>
             <p class="text-xl text-gray-400 max-w-3xl mx-auto">
                 The **Realtime Output Dual System Studio** is engineered for seamless, multi-platform deployment, prioritizing speed and visual quality. This is the source.
             </p>
         </section>
 
+        <!-- Section 01: Live Output Feeds (Video & Showcase) -->
         <section id="command-center" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-red border-b-2 border-gray-700 pb-4">
+            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
                 | 01. Live Output Feeds |
             </h3>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 
+                <!-- TikTok Live Feed Container (9:16 Aspect Ratio) -->
                 <div class="lg:col-span-1 studio-card rounded-xl p-6 flex flex-col items-center">
                     <div class="flex items-center space-x-3 mb-6">
+                        <!-- Icon: Mobile Phone -->
                         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 3H8a2 2 0 00-2 2v14a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2zM8 1h8a4 4 0 014 4v14a4 4 0 01-4 4H8a4 4 0 01-4-4V5a4 4 0 014-4zM12 18a1 1 0 100-2 1 1 0 000 2z"/></svg>
-                        <h4 class="text-2xl font-bold text-red">Video Feed: @epicactsuperplayer</h4>
+                        <h4 class="text-2xl font-bold text-white">Video Feed: @epicactsuperplayer</h4>
                     </div>
 
                     <!-- TikTok Direct Iframe Embed with Error Detection -->
@@ -115,35 +123,41 @@
                             onload="console.log('✅ TikTok iframe loaded successfully')"
                             onerror="console.error('❌ TikTok iframe failed to load'); document.getElementById('tiktok-error').style.display='block';"
                         ></iframe>
-                        <div id="tiktok-error" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:rgb(224, 18, 18); text-align:center;">
-                            <p>⚠️ TikTok video failed to load</p>
-                            <p class="text-sm mt-2">Check console for details</p>
+                        <!-- Fallback message for failed iframe loading -->
+                        <div id="tiktok-error" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; text-align:center; padding: 20px;">
+                            <p class="text-xl font-semibold">⚠️ TikTok video failed to load</p>
+                            <p class="text-sm mt-2 text-gray-400">The embed source might be blocked or removed.</p>
                         </div>
                     </div>
                 </div>
 
+                <!-- Showcase Photo Gallery (Manual Uploads) -->
                 <div class="lg:col-span-2 studio-card rounded-xl p-6">
                     <div class="flex items-center space-x-3 mb-6">
+                        <!-- Icon: Image/Photo -->
                         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1zM5 17h14V7H5v10zm3.5-8a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM15 15.5l-3-3-4 4v1h7l-3-2z"/></svg>
-                        <h4 class="text-2xl font-bold text-red">Showcase Photos</h4>
+                        <h4 class="text-2xl font-bold text-white">Showcase Photos</h4>
                     </div>
                     
-                    <p class="text-sm text-orange-400 mb-4">
+                    <p class="text-sm text-gray-400 mb-4">
                         This gallery reflects photos manually uploaded by the owner. New additions populate instantly.
                     </p>
 
                     <div id="showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-                    <p id="photoCount" class="text-right text-xs mt-4 text-red-500"></p>
+                    <p id="photoCount" class="text-right text-xs mt-4 text-gray-500"></p>
                 </div>
             </div>
         </section>
 
+        <!-- --- -->
+
+        <!-- Section 02: TikTok Comment Section Photos -->
         <section id="tiktok-comments" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-red border-b-2 border-gray-700 pb-4">
+            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
                 | 02. TikTok Comment Section Photos |
             </h3>
             
-            <p class="text-lg text-orange-400 max-w-3xl mx-auto text-center mb-8">
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
                 A curated selection of images perfect for comment section replies or short-form reactions.
             </p>
 
@@ -151,12 +165,15 @@
             <p id="tiktokCount" class="text-right text-xs mt-4 text-gray-500"></p>
         </section>
 
+        <!-- --- -->
+
+        <!-- Section 03: Wallpaper Gallery -->
         <section id="wallpaper-gallery" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-red border-b-2 border-gray-700 pb-4">
+            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
                 | 03. Wallpaper Gallery |
             </h3>
             
-            <p class="text-lg text-red-400 max-w-3xl mx-auto text-center mb-8">
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
                 High-resolution, high-quality images suitable for desktop and mobile backgrounds.
             </p>
 
@@ -164,24 +181,78 @@
             <p id="wallpaperCount" class="text-right text-xs mt-4 text-gray-500"></p>
         </section>
 
+        <!-- --- -->
+
+        <!-- Section 04: Recommended PFPs -->
         <section id="pfp-gallery" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-red border-b-2 border-gray-700 pb-4">
+            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
                 | 04. Recommended PFPs |
             </h3>
             
-            <p class="text-lg text-red-400 max-w-3xl mx-auto text-center mb-8">
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
                 Optimized, high-impact images suitable for profile pictures across all social media platforms.
             </p>
 
             <div id="pfp-showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
             <p id="pfpCount" class="text-right text-xs mt-4 text-gray-500"></p>
         </section>
+        
+        <!-- --- -->
+        
+        <!-- Section 05: Additional TikTok Vertical Feeds (Replaces YouTube Links) -->
+        <section id="tiktok-gallery-additional" class="py-16">
+            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-pink-700 pb-4">
+                | 05. Additional TikTok Vertical Feeds |
+            </h3>
+            
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
+                These are supplementary vertical video feeds using the permissive TikTok embed protocol.
+            </p>
+
+            <!-- Grid updated to 3 columns for medium screens and up (md:grid-cols-3) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Video 1 (Anime Edit) -->
+                <div class="studio-card rounded-xl p-6 flex flex-col items-center">
+                    <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
+                        <iframe 
+                            src="https://www.tiktok.com/embed/7152859867718536494"
+                            style="width: 100%; height: 100%; border: none; border-radius: 0.75rem;"
+                            allowfullscreen scrolling="no" allow="encrypted-media; autoplay;"
+                        ></iframe>
+                    </div>
+                </div>
+
+                <!-- Video 2 (Cooking Recipes) -->
+                <div class="studio-card rounded-xl p-6 flex flex-col items-center">
+                    <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
+                        <iframe 
+                            src="https://www.tiktok.com/embed/7506221496151395590"
+                            style="width: 100%; height: 100%; border: none; border-radius: 0.75rem;"
+                            allowfullscreen scrolling="no" allow="encrypted-media; autoplay;"
+                        ></iframe>
+                    </div>
+                </div>
+
+                <!-- NEW Video 3 (@zeyxck8) -->
+                <div class="studio-card rounded-xl p-6 flex flex-col items-center">
+                    <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
+                        <iframe 
+                            src="https://www.tiktok.com/embed/7515022720476794120"
+                            style="width: 100%; height: 100%; border: none; border-radius: 0.75rem;"
+                            allowfullscreen scrolling="no" allow="encrypted-media; autoplay;"
+                        ></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </main>
 
-    <footer class="mt-16 p-6 border-t border-gray-800 text-center text-red-500">
+    <!-- Footer -->
+    <footer class="mt-16 p-6 border-t border-gray-800 text-center text-gray-500">
         <p>&copy; <span id="currentYear"></span> RODSS Studio. Realtime Output Dual System Architecture.</p>
-        <p class="text-xs mt-1 text-orange-600">Made by Bytestorm</p>
+        <p class="text-xs mt-1 text-gray-600">Made by Bytestorm</p>
         <p class="text-xs mt-1">Design optimized for mobile and command efficiency.</p>
     </footer>
 
@@ -189,216 +260,67 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-            // Jujutsu Kaisen image - MAY BE UNSTABLE
+            // 1. Showcase Photos (Owner/Portfolio)
             const ownerPhotos = [
-                { 
-                    url: "https://images.mein-mmo.de/medien/2024/08/Jujutsu-Kaisen-Titel-title-1-780x438.jpg", 
-                    alt: "Curated Portfolio Piece" 
-                },
-                // Abstract Digital Art - UNSTABLE PINTEREST LINK
-                {
-                    url: "https://i.pinimg.com/736x/cc/1a/1c/cc1a1c6f44b7c44a9ab1e85d66ee2adf.jpg",
-                    alt: "Curated Portfolio Piece"
-                },
-                // New added photo (stable cloudfront link)
-                {
-                    url: "https://old-wiki.warthunder.com/images/thumb/a/ac/ArtImage_Maus.png/800px-ArtImage_Maus.png",
-                    alt: "Curated Portfolio Piece"
-                },
-                // New image added per user request
-                {
-                    url: "https://as1.ftcdn.net/v2/jpg/01/82/53/40/1000_F_182534068_hZ0URB0k1Pc7qtsclIkoI4UmzGzR015Y.jpg",
-                    alt: "Curated Portfolio Piece (New)"
-                },
-                // New anime girl image added per user request
-                {
-                    url: "https://m.media-amazon.com/images/S/pv-target-images/f285b19f4c1e35b0a6a830ae98b10a6faf8559adce79c99e9b66c5ae8417dc1c.jpg",
-                    alt: "Curated Portfolio Piece (Anime Girl)"
-                },
-                // New Nissan GT-R NISMO image added per user request
-                {
-                    url: "https://www-europe.nissan-cdn.net/content/dam/Nissan/global/vehicles/gt-r/r35/2_minor_change/nismo/16tdieulhd_GT-R_NISMO_Helios_001.jpg.ximg.l_full_m.smart.jpg",
-                    alt: "Curated Portfolio Piece (Nissan GT-R NISMO)"
-                },
-                // Gooner anime
-                {  
-                   url: "https://i.pinimg.com/736x/d7/b2/c7/d7b2c74ddd53a308141d7d368cd275bd.jpg",
-                   alt: "Goon"
-                },
-                //anime gooning
-                {
-                   url:  "https://static.wikitide.net/kaoruhanawiki/e/e5/Kaoruko_Portal_Color.png",
-                   alt: "waguri"
-                },
-                //amd r5 9600x
-                {
-                   url: "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg",
-                   alt: "amd ryzen 5 9600x"
-                },
-                //pc setup
-                {
-                    url: "https://i.imgur.com/q3BVvn7.jpeg",
-                    alt: "pc setup"
-                },
-                //utahime
-                {
-                   url: "https://i.pinimg.com/736x/57/3b/96/573b960830135a635f4e4f8932a78741.jpg",
-                   alt: "utahime"
-                }
-         ];
+                { url: "https://images.mein-mmo.de/medien/2024/08/Jujutsu-Kaisen-Titel-title-1-780x438.jpg", alt: "Curated Portfolio Piece" },
+                { url: "https://i.pinimg.com/736x/cc/1a/1c/cc1a1c6f44b7c44a9ab1e85d66ee2adf.jpg", alt: "Abstract Digital Art" },
+                { url: "https://old-wiki.warthunder.com/images/thumb/a/ac/ArtImage_Maus.png/800px-ArtImage_Maus.png", alt: "War Thunder Maus Tank" },
+                { url: "https://as1.ftcdn.net/v2/jpg/01/82/53/40/1000_F_182534068_hZ0URB0k1Pc7qtsclIkoI4UmzGzR015Y.jpg", alt: "Abstract Tech/Energy Field" },
+                { url: "https://m.media-amazon.com/images/S/pv-target-images/f285b19f4c1e35b0a6a830ae98b10a6faf8559adce79c99e9b66c5ae8417dc1c.jpg", alt: "Anime Girl" },
+                { url: "https://www-europe.nissan-cdn.net/content/dam/Nissan/global/vehicles/gt-r/r35/2_minor_change/nismo/16tdieulhd_GT-R_NISMO_Helios_001.jpg.ximg.l_full_m.smart.jpg", alt: "Nissan GT-R NISMO" },
+                { url: "https://i.pinimg.com/736x/d7/b2/c7/d7b2c74ddd53a308141d7d368cd275bd.jpg", alt: "Gooner Anime" },
+                { url: "https://static.wikitide.net/kaoruhanawiki/e/e5/Kaoruko_Portal_Color.png", alt: "Kaoruko Portal" },
+                { url: "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg", alt: "AMD Ryzen 5 9600X" },
+                { url: "https://i.imgur.com/q3BVvn7.jpeg", alt: "PC Setup" },
+                { url: "https://i.pinimg.com/736x/57/3b/96/573b960830135a635f4e4f8932a78741.jpg", alt: "Utahime Anime" }
+            ];
 
-            
-            // 2. TikTok Comment Section Photos (NEW DATA)
+            // 2. TikTok Comment Section Photos
             const tiktokCommentPhotos = [
-                // Only keeping the user's requested GIF.
-                { 
-                    url: "https://media1.tenor.com/m/9SmwhhaifUkAAAAC/mimimi-clash-royale.gif", 
-                    alt: "Clash Royale Mimimi Reaction GIF"
-                },
-                // HEHEHEHEHA Clash Royale
-                {
-                    url: "https://i1.sndcdn.com/artworks-yAUqyDfIhNuf1bXX-heZuPQ-t500x500.jpg",
-                    alt: "Clash Royale HEHEHEHA"
-                },
-                // Hoi De Dabpn
-                {
-                    url: "https://i1.sndcdn.com/artworks-ogFABKtUmdqC2yGB-Po2Mlg-t240x240.jpg",
-                    alt: "hoit de bapn"
-                },
-                //Frogie Dude
-                {
-                    url: "https://media.tenor.com/HerDQQmGANkAAAAe/peepobeer.png",
-                    alt: "frogie dude and the beer"
-                },
-                //gojo
-                 {
-                    url: "https://preview.redd.it/yall-got-different-versions-of-this-v0-f5un1s2ajasc1.jpeg?width=1284&auto=webp&s=c58f9380dadc877fd267084979b96060aed825a9",
-                    alt: "frogie dude and the beer"
-                },
-             
-                //allofusaredead dont sybau (FIXED: removed space in URL)
-                {
-                    url: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQa5CW59_oxYr3IhIW2ak-kcUT_jTz4DRCd4pQfeo6hInfaSNiGZ",
-                    alt: "all of us are dead dont sybau"
-                },
-                //Jisoo sybau
-                {
-                   url: "https://i.pinimg.com/736x/02/cd/19/02cd190a6d92ff7305e82a1bec52b009.jpg",
-                   alt: "Jisoo sybau"
-                },
-                //bts
-                {
-                   url: "https://i.pinimg.com/736x/6e/65/b2/6e65b228897e2fe40267f81f9f684154.jpg",
-                   alt: "bts"
-                },
-                //imcommingoforu
-                {  
-                   url: "https://i.pinimg.com/564x/32/0d/ab/320dabfc27891f5da5b73dffb8f57247.jpg",
-                   alt: "im comming for u"
-                },
-                //yes or yes
-                {
-                   url: "https://battwo.com/aok/xfs/attachs/cfe91da86e224d4fcdf6aa757aa637fcb5098652_736_717_33422.jpeg",
-                   alt: "yes or yes"
-                },
-                //cute cat
-                {
-                   url: "https://i.imgur.com/WMBo8rQ.jpeg",
-                   alt: "cute cat"
-                },
-                //im too european for this
-                {
-                    url: "https://i.redd.it/kktv0b7qssof1.jpeg",
-                    alt: "im too european for this"
-               },
-                //orban
-                {
-                    url: "https://i.redd.it/cwlqifgm0isf1.jpeg",
-                    alt: "Orban"
-                },
-                //austria mentioned
-                { 
-                    url: "https://preview.redd.it/they-put-the-austrian-flag-instead-of-the-american-one-v0-k8zjqqf1i8mf1.jpeg?width=1168&auto=webp&s=3faed596f81d73fa25de80b22d8c449c20052cc0",
-                    alt: "austriaa mentioned"
-                },
-               //cybabully on
-                {
-                    url: "https://media.tenor.com/AaJmp0H5xcYAAAAM/jarvis-cyber-bullying.gif",
-                    alt: "jarvis cyberbully mode on"
-                },
-                //yt shorts over there
-                 {
-                     url: "https://i.imgur.com/hsPIdzV.jpeg",
-                     alt: "yt shorts over there"
-                 },
-                //truth dedector lie
-                {
-                    url: "https://i.ytimg.com/vi/AAgD47YoCpQ/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AG-B4AC0AWKAgwIABABGH8gEyghMA8=&rs=AOn4CLAwPBwAF3fErongkjmLru6zHjF9EQ",
-                    alt: "truth dedector"
-                },
-                //notdieforisral
-                {
-                  url: "https://ih1.redbubble.net/image.5864800858.6317/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg",
-                  alt: "not dieing for them"
-               },
-                //yup another classic one
-                {
-                    url: "https://media.tenor.com/ZUwTmRub8yoAAAAM/gooner-goon.gif",
-                    alt: "yup another classic one"
-                }
+                { url: "https://media1.tenor.com/m/9SmwhhaifUkAAAAC/mimimi-clash-royale.gif", alt: "Clash Royale Mimimi Reaction GIF" },
+                { url: "https://i1.sndcdn.com/artworks-yAUqyDfIhNuf1bXX-heZuPQ-t500x500.jpg", alt: "Clash Royale HEHEHEHA" },
+                { url: "https://i1.sndcdn.com/artworks-ogFABKtUmdqC2yGB-Po2Mlg-t240x240.jpg", alt: "Hoi De Dabpn" },
+                { url: "https://media.tenor.com/HerDQQmGANkAAAAM/peepobeer.png", alt: "Frogie Dude and the Beer" },
+                { url: "https://preview.redd.it/yall-got-different-versions-of-this-v0-f5un1s2ajasc1.jpeg?width=1284&auto=webp&s=c58f9380dadc877fd267084979b96060aed825a", alt: "Gojo Meme" },
+                { url: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQa5CW59_oxYr3IhIW2ak-kcUT_jTz4DRCd4pQfeo6hInfaSNiGZ", alt: "All of us are dead dont sybau" },
+                { url: "https://i.pinimg.com/736x/02/cd/19/02cd190a6d92ff7305e82a1bec52b009.jpg", alt: "Jisoo Sybau" },
+                { url: "https://i.pinimg.com/736x/6e/65/b2/6e65b228897e2fe40267f81f9f684154.jpg", alt: "BTS" },
+                { url: "https://i.pinimg.com/564x/32/0d/ab/320dabfc27891f5da5b73dffb8f57247.jpg", alt: "Im Comming For U" },
+                { url: "https://battwo.com/aok/xfs/attachs/cfe91da86e224d4fcdf6aa757aa637fcb5098652_736_717_33422.jpeg", alt: "Yes Or Yes" },
+                { url: "https://i.imgur.com/WMBo8rQ.jpeg", alt: "Cute Cat" },
+                { url: "https://i.redd.it/kktv0b7qssof1.jpeg", alt: "Im Too European For This" },
+                { url: "https://i.redd.it/cwlqifgm0isf1.jpeg", alt: "Orban" },
+                { url: "https://preview.redd.it/they-put-the-austrian-flag-instead-of-the-american-one-v0-k8zjqqf1i8mf1.jpeg?width=1168&auto=webp&s=3faed596f81d73fa25de80b22d8c449c20052cc0", alt: "Austria Mentioned" },
+                { url: "https://media.tenor.com/AaJmp0H5xcYAAAAM/jarvis-cyber-bullying.gif", alt: "Jarvis Cyberbully Mode On GIF" },
+                { url: "https://i.imgur.com/hsPIdzV.jpeg", alt: "YT Shorts Over There" },
+                { url: "https://i.ytimg.com/vi/AAgD47YoCpQ/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AG-B4AC0AWKAgwIABABGH8gEyghMA8=&rs=AOn4CLAwPBwAF3fErongkjmLru6zHjF9EQ", alt: "Truth Detector" },
+                { url: "https://ih1.redbubble.net/image.5864800858.6317/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg", alt: "Not Dieing For Them" },
+                { url: "https://media.tenor.com/ZUwTmRub8yoAAAAM/gooner-goon.gif", alt: "Yup Another Classic One GIF" }
             ];
 
-
-
-            // 3. Wallpaper Gallery (Moved/Renamed from Chosen Wallpapers)
+            // 3. Wallpaper Gallery
             const wallpaperPhotos = [
-                // Only keeping the user's requested wallpaper.
-                { 
-                    url: "https://external-preview.redd.it/Hb7ZzIVajWsGlWkhNISeMOyL_hX8-9AuJWoBrey6eKI.jpg?width=640&crop=smart&auto=webp&s=58a25856e693e6e6b74b17454a8d92b18073b214", 
-                    alt: "New Dark Aesthetic Reddit Wallpaper" 
-                },
-                //waguri wallpaper
-                {
-                    url: "https://i.pinimg.com/736x/d9/b2/27/d9b227a4b8622f3362cc55fc1d0ea62d.jpg",
-                    alt: "waguri wallpaper"
-                },
-                // waguri pc wallpaper
-                {
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRovcleeJwK0OpgWIsUvbn_OscbD_f_QTqR0g&s",
-                    alt: "waguri pc wallpaper"
-                },
-                //corsair pc wallpaper
-                {
-                   url: "https://wallpaperbat.com/img/789393-4k-corsair-wallpaper-top-free-4k-corsair-background.png",
-                    alt: "corsair pc"
-                },
-                // Porsche Anime Wallpaper
-                {
-                    url: "https://c4.wallpaperflare.com/wallpaper/206/833/289/anime-artwork-anime-girls-the-duomo-porsche-hd-wallpaper-preview.jpg",
-                    alt: "Wallpaper porsche Anime"
-                }
-          ];
-
-            // 4. Recommended PFPs (NEW DATA)
-            const recommendedPFPs = [
-                // PFP B updated with the new Porsche 911 GT3 R URL
-                { 
-                    url: "https://res.cloudinary.com/dmwcbhehi/image/upload/c_thumb,w_3840,g_auto/f_auto/q_auto/v1/911_GT3_R_Scrollsection_01-tradition_dhzmuw?_a=BAVAZGDX0", 
-                    alt: "Recommended PFP B (Porsche 911 GT3 R)" 
-                },
-                // PFP C updated with the BMW Fisheye URL
-                { 
-                    url: "https://cdn.pfps.gg/pfps/2855-bmw-fisheye.png", 
-                    alt: "Recommended PFP C (BMW Fisheye)" 
-                },
-                // PFP D updated with the new Dark Aesthetic Car URL
-                { 
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvYYq471rW44TZtr8YF4wNKWD1IyRr5fJZtQ&s", 
-                    alt: "Recommended PFP D (Dark Aesthetic Car)" 
-                }
-                // PFP E has been removed as requested.
+                { url: "https://external-preview.redd.it/Hb7ZzIVajWsGlKkhNISeMOyL_hX8-9AuJWoBrey6eKI.jpg?width=640&crop=smart&auto=webp&s=58a25856e693e6e6b74b17454a8d92b18073b214", alt: "New Dark Aesthetic Reddit Wallpaper" },
+                { url: "https://i.pinimg.com/736x/d9/b2/27/d9b227a4b8622f3362cc55fc1d0ea62d.jpg", alt: "Waguri Wallpaper" },
+                { url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRovcleeJwK0OpgWIsUvbn_OscbD_f_QTqR0g&s", alt: "Waguri PC Wallpaper" },
+                { url: "https://wallpaperbat.com/img/789393-4k-corsair-wallpaper-top-free-4k-corsair-background.png", alt: "Corsair PC Wallpaper" },
+                { url: "https://c4.wallpaperflare.com/wallpaper/206/833/289/anime-artwork-anime-girls-the-duomo-porsche-hd-wallpaper-preview.jpg", alt: "Porsche Anime Wallpaper" }
             ];
 
+            // 4. Recommended PFPs
+            const recommendedPFPs = [
+                // Note: These URLs are high-res and may take a moment to load if the CDN is slow.
+                { url: "https://res.cloudinary.com/dmwcbhehi/image/upload/c_thumb,w_3840,g_auto/f_auto/q_auto/v1/911_GT3_R_Scrollsection_01-tradition_dhzmuw?_a=BAVAZGDX0", alt: "Recommended PFP (Porsche 911 GT3 R)" },
+                { url: "https://cdn.pfps.gg/pfps/2855-bmw-fisheye.png", alt: "Recommended PFP (BMW Fisheye)" },
+                { url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvYYq471rW44TZtr8YF4wNKWD1IyRr5fJZtQ&s", alt: "Recommended PFP (Dark Aesthetic Car)" }
+            ];
+
+            /**
+             * Renders an array of photo objects into a specified container.
+             * @param {Array<Object>} photos - Array of { url, alt } objects.
+             * @param {string} containerId - ID of the container element (e.g., 'showcase').
+             * @param {string} countId - ID of the element to display the count (e.g., 'photoCount').
+             */
             function renderGallery(photos, containerId, countId) {
                 const container = document.getElementById(containerId);
                 const countDisplay = document.getElementById(countId);
@@ -408,8 +330,8 @@
                 if (photos.length === 0) {
                     container.innerHTML = `
                         <div class="col-span-full text-center py-10 rounded-lg border-2 border-dashed border-gray-700 bg-gray-900">
-                            <p class="text-xl text-red font-semibold mb-2">Content Feed Cleared.</p>
-                            <p class="text-gray-400">Add photo URLs to the associated data array in the script block.</p>
+                            <p class="text-xl text-white font-semibold mb-2">Content Feed Cleared.</p>
+                            <p class="text-sm text-gray-400">Add photo URLs to the associated data array in the script block.</p>
                         </div>
                     `;
                     if (countDisplay) countDisplay.textContent = "No content currently loaded. Ready for import.";
@@ -432,16 +354,15 @@
                 }
             }
 
+            // Execute rendering for all galleries
             renderGallery(ownerPhotos, 'showcase', 'photoCount');
             renderGallery(tiktokCommentPhotos, 'tiktok-showcase', 'tiktokCount');
             renderGallery(wallpaperPhotos, 'wallpaper-showcase', 'wallpaperCount');
             renderGallery(recommendedPFPs, 'pfp-showcase', 'pfpCount');
 
-            // TikTok now uses direct iframe - no script loading needed
-            console.log('✅ TikTok iframe embed loaded');
-            console.log('Page galleries rendered successfully');
+            console.log('✅ RODSS Page rendered successfully with all four content galleries.');
         });
-    
+        
     </script>
 
 </body>
