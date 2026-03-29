@@ -1,621 +1,767 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RODSS Corporation</title>
+  <meta name="description" content="RODSS is an official Bytestorm-owned product providing images, wallpapers, video feeds, and creative tools.">
+  <meta name="keywords" content="RODSS Corporation, Bytestorm, wallpapers, image studio, photo editor">
+  <link rel="canonical" href="https://rodss.vercel.app/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="RODSS – Image & Video Studio">
+  <meta property="og:description" content="Images, wallpapers, photo editor and more from Bytestorm.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rodss.vercel.app/">
+  <meta property="og:image" content="https://i.imgur.com/NLz6Jfd.png">
+  <link rel="icon" type="image/png" href="https://i.imgur.com/NLz6Jfd.png">
+  <link rel="manifest" href="/manifest.json">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"RODSS Corporation","url":"https://rodss.vercel.app/","description":"Realtime Output Dual System Studio.","logo":"https://i.imgur.com/NLz6Jfd.png"}</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCZ87HM440"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QCZ87HM440');</script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    :root { --accent-color:#ffffff; --bg-color:#000000; --card-color:#1a1a1a; font-family:'Inter',sans-serif; }
+    body { background-color:var(--bg-color); color:#e5e7eb; transition:background-color .3s ease; }
+    .studio-title-glow { color:var(--accent-color); text-shadow:0 0 5px rgba(255,255,255,.7),0 0 15px rgba(255,255,255,.5); }
+    ::-webkit-scrollbar{width:8px} ::-webkit-scrollbar-thumb{background-color:#9ca3af;border-radius:4px} ::-webkit-scrollbar-track{background-color:#1f2937}
+    .tiktok-aspect { aspect-ratio:9/16; width:100%; min-height:400px; max-height:70vh; }
+    .studio-card { background-color:var(--card-color); border:1px solid #374151; box-shadow:0 4px 12px rgba(255,255,255,.05); transition:transform .3s ease,box-shadow .3s ease; }
+    .studio-card:hover { transform:translateY(-3px); box-shadow:0 8px 16px rgba(255,255,255,.1),0 0 20px rgba(255,255,255,.1); }
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RODSS</title>
-    <!-- Rel Icon -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/svg+xml" href="https://i.imgur.com/NLz6Jfd.png"
+    /* hamburger */
+    #hamburgerWrap{position:fixed;top:15px;left:15px;z-index:9999;font-family:monospace}
+    #hamburgerBtn{cursor:pointer;background:#0a0a0a;border:1px solid #333;border-radius:6px;padding:8px 12px;font-size:18px;color:white;user-select:none}
+    #byteNav{display:none;flex-direction:column;gap:8px;margin-top:8px;background:#0a0a0a;border:1px solid #333;border-radius:6px;padding:10px;min-width:180px}
+    #byteNav a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:4px;border:1px solid #222;display:flex;align-items:center;gap:8px;font-size:13px}
+    #byteNav a:hover{background:#1a1a1a}
 
-    <!-- Google Analytics-->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCZ87HM440"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-QCZ87HM440');
-    </script>
-<!-- Hamburger Menu -->
+    /* auth */
+    .auth-btn{background:#1a1a1a;border:1px solid #374151;color:#e5e7eb;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
+    .auth-btn:hover{border-color:#9ca3af}
+    .auth-btn.primary{background:#fff;border-color:#fff;color:#000}
+    .auth-btn.primary:hover{opacity:.85}
+
+    /* modal */
+    .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center}
+    .modal-backdrop.open{display:flex}
+    .modal{background:#111;border:1px solid #374151;border-radius:16px;padding:36px;width:100%;max-width:420px;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.9);animation:modalIn .25s ease}
+    @keyframes modalIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:#6b7280;font-size:20px;cursor:pointer}
+    .modal-close:hover{color:#e5e7eb}
+    .modal h2{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:6px}
+    .modal p.sub{font-size:13px;color:#6b7280;margin-bottom:24px}
+    .social-btn{width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;border:1px solid #374151;background:#1a1a1a;color:#e5e7eb;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;margin-bottom:10px}
+    .social-btn:hover{border-color:#6b7280;background:#222}
+    .divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:#6b7280;font-size:12px}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#374151}
+    .form-input{width:100%;background:#1a1a1a;border:1px solid #374151;color:#e5e7eb;font-family:'Inter',sans-serif;font-size:14px;padding:11px 14px;border-radius:10px;margin-bottom:10px;outline:none;transition:border-color .2s}
+    .form-input:focus{border-color:#9ca3af}
+    .form-input::placeholder{color:#6b7280}
+    .submit-btn{width:100%;background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;padding:13px;border-radius:10px;cursor:pointer;margin-top:6px;transition:opacity .2s}
+    .submit-btn:hover{opacity:.85}
+
+    /* user avatar + dropdown */
+    .user-avatar{width:36px;height:36px;border-radius:50%;background:#fff;color:#000;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid transparent;transition:border-color .2s}
+    .user-avatar:hover{border-color:#9ca3af}
+    .user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#111;border:1px solid #374151;border-radius:12px;padding:10px;min-width:200px;box-shadow:0 20px 60px rgba(0,0,0,.8);display:none;z-index:999}
+    .user-dropdown.open{display:block}
+    .user-dropdown .u-name{font-weight:600;padding:8px 10px 4px;font-size:14px}
+    .user-dropdown .u-email{font-size:11px;color:#6b7280;padding:0 10px 10px;border-bottom:1px solid #374151;margin-bottom:8px}
+    .user-dropdown a,.user-dropdown button{display:block;width:100%;text-align:left;background:none;border:none;color:#e5e7eb;font-family:'Inter',sans-serif;font-size:13px;padding:8px 10px;border-radius:6px;cursor:pointer;text-decoration:none;transition:background .15s}
+    .user-dropdown a:hover,.user-dropdown button:hover{background:#1a1a1a}
+    .user-dropdown .signout{color:#f87171;margin-top:4px}
+    .sync-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;margin:6px 10px 0}
+    .sync-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+    /* gallery */
+    .gallery-item{aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#1a1a1a;border:1px solid #374151;cursor:pointer;position:relative}
+    .gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;display:block}
+    .gallery-item:hover img{transform:scale(1.06)}
+    .gallery-item .edit-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}
+    .gallery-item:hover .edit-overlay{opacity:1}
+    .edit-overlay-btn{background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:700;padding:8px 18px;border-radius:6px;cursor:pointer}
+
+    /* sync panel */
+    .sync-panel{background:#111;border:1px solid #374151;border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .sync-connect-btn{background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:9px 20px;border-radius:8px;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+    .sync-connect-btn:hover{opacity:.85}
+    .sync-connect-btn.connected{background:#1a1a1a;color:#4ade80;border:1px solid rgba(74,222,128,.4)}
+
+    /* toast */
+    .toast{position:fixed;bottom:24px;right:24px;background:#1a1a1a;border:1px solid #374151;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;color:#e5e7eb;box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s ease}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast.success{border-color:rgba(74,222,128,.5);color:#4ade80}
+    .toast.error{border-color:rgba(248,113,113,.5);color:#f87171}
+
+    /* photo editor */
+    #editorModal .modal{max-width:720px;width:95vw}
+    .editor-canvas-wrap{position:relative;background:#000;border-radius:10px;overflow:hidden;margin-bottom:16px;display:flex;align-items:center;justify-content:center;min-height:280px}
+    #editorCanvas{max-width:100%;max-height:340px;display:block}
+    .editor-controls{display:flex;flex-wrap:wrap;gap:10px}
+    .slider-group{flex:1;min-width:140px}
+    .slider-group label{font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:flex;justify-content:space-between;margin-bottom:4px}
+    .slider-group input[type=range]{width:100%;accent-color:#fff}
+    .editor-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .editor-actions button{flex:1;padding:10px;border-radius:8px;border:1px solid #374151;background:#1a1a1a;color:#e5e7eb;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+    .editor-actions button:hover{border-color:#9ca3af}
+    .editor-actions button.primary-action{background:#fff;border-color:#fff;color:#000}
+    .editor-actions button.primary-action:hover{opacity:.85;color:#000}
+    .crop-btn{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid #374151;background:#1a1a1a;color:#6b7280;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+    .crop-btn:hover,.crop-btn.active{border-color:#9ca3af;color:#e5e7eb}
+
+    /* ── USER POSTS SECTION ── */
+    .user-post-card{background:#111;border:1px solid #374151;border-radius:14px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+    .user-post-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(255,255,255,.08)}
+    .user-post-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+    .user-post-meta{padding:10px 12px;display:flex;align-items:center;gap:10px}
+    .user-post-avatar{width:28px;height:28px;border-radius:50%;background:#fff;color:#000;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .user-post-info{flex:1;min-width:0}
+    .user-post-name{font-size:13px;font-weight:600;color:#e5e7eb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .user-post-time{font-size:10px;color:#6b7280}
+    .user-post-edit-btn{font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid #374151;background:#1a1a1a;color:#9ca3af;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;flex-shrink:0}
+    .user-post-edit-btn:hover{border-color:#9ca3af;color:#e5e7eb}
+
+    /* upload post panel */
+    .upload-post-panel{background:#111;border:2px dashed #374151;border-radius:14px;padding:32px;text-align:center;transition:border-color .3s,background .3s;cursor:pointer}
+    .upload-post-panel:hover{border-color:#6b7280;background:#161616}
+    .upload-post-panel.hidden{display:none}
+
+    /* login gate */
+    .login-gate{background:#111;border:1px solid #374151;border-radius:14px;padding:40px 24px;text-align:center}
+    .login-gate-title{font-size:1.1rem;font-weight:700;color:#e5e7eb;margin-bottom:8px}
+    .login-gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+    .login-gate-btn{background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:10px 24px;border-radius:8px;cursor:pointer;transition:opacity .2s}
+    .login-gate-btn:hover{opacity:.85}
+
+    /* edit overlay with lock for guests */
+    .gallery-item .edit-overlay-locked{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;transition:opacity .25s}
+    .gallery-item:hover .edit-overlay-locked{opacity:1}
+    .lock-icon{font-size:1.4rem}
+    .lock-label{font-size:11px;color:#9ca3af;font-weight:600}
+  </style>
+</head>
+<body class="min-h-screen">
+
+<!-- HAMBURGER -->
 <div id="hamburgerWrap">
   <div id="hamburgerBtn" onclick="toggleNav()">&#9776;</div>
   <div id="byteNav">
     <a href="https://bytestormcorp.vercel.app" target="_blank">
-      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width="20" height="20"><text y='.9em' font-size='90' font-family='sans-serif' fill='white'>B</text></svg>
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width="18" height="18"><text y='.9em' font-size='90' font-family='sans-serif' fill='white'>B</text></svg>
       Bytestorm Corporation
     </a>
     <a href="https://bytestorm-esports.vercel.app" target="_blank">
-      <img src="https://raw.githubusercontent.com/epicactsuperplayer/Bytestorm-Esports/main/ByteEsportLogo.png" width="20" height="20" style="border-radius:3px;">
-      Bytestorm Esports
+      <img src="https://raw.githubusercontent.com/epicactsuperplayer/Bytestorm-Esports/main/ByteEsportLogo.png" width="18" height="18" style="border-radius:3px" alt="Esports"> Bytestorm Esports
     </a>
     <a href="https://rodss.vercel.app" target="_blank">
-      <img src="https://i.imgur.com/NLz6Jfd.png" width="20" height="20" style="border-radius:3px;">
-      RODSS Corporation
+      <img src="https://i.imgur.com/NLz6Jfd.png" width="18" height="18" style="border-radius:3px" alt="RODSS"> RODSS Corporation
     </a>
     <a href="https://bytestormchat.vercel.app" target="_blank">
-      <img src="https://i.imgur.com/NLz6Jfd.png" width="20" height="20" style="border-radius:3px;">
-      ByteChat
+      <img src="https://i.imgur.com/NLz6Jfd.png" width="18" height="18" style="border-radius:3px" alt="ByteChat"> ByteChat
     </a>
   </div>
 </div>
 
-<script>
-function toggleNav() {
-  const nav = document.getElementById('byteNav');
-  nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
-}
-// Close nav when clicking outside
-document.addEventListener('click', function(e) {
-  const wrap = document.getElementById('hamburgerWrap');
-  if (!wrap.contains(e.target)) {
-    document.getElementById('byteNav').style.display = 'none';
+<!-- HEADER — logo centred, auth on right -->
+<header class="sticky top-0 z-50 bg-black/95 backdrop-blur-sm shadow-md p-4 border-b border-gray-800">
+  <div class="max-w-7xl mx-auto relative flex items-center justify-center">
+    <!-- centred title -->
+    <h1 class="text-3xl font-extrabold tracking-widest uppercase studio-title-glow text-white">R O D S S</h1>
+    <!-- auth pinned right -->
+    <div style="position:absolute;right:0;display:flex;align-items:center;gap:10px;" id="authArea">
+      <div id="loggedOut" style="display:flex;gap:10px;">
+        <button class="auth-btn" onclick="openModal('loginModal')">Sign In</button>
+        <button class="auth-btn primary" onclick="openModal('registerModal')">Join Free</button>
+      </div>
+      <div id="loggedIn" style="display:none;position:relative;">
+        <div class="user-avatar" id="userAvatar" onclick="toggleDropdown()"></div>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="u-name" id="dropdownName"></div>
+          <div class="u-email" id="dropdownEmail"></div>
+          <div class="sync-badge" id="syncBadge" style="display:none;"><span class="sync-dot"></span> ByteChat Synced</div>
+          <a href="https://bytestormchat.vercel.app" target="_blank" style="margin-top:8px;">💬 Open ByteChat</a>
+          <button onclick="openEditorModal()">🖼️ Photo Editor</button>
+          <button class="signout" onclick="signOut()">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto p-4 md:p-8">
+
+  <!-- HERO -->
+  <section class="text-center py-16">
+    <h2 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white">
+      <span class="text-gray-200">Studio Output Video</span>
+      <span class="studio-title-glow text-white">&</span>
+      <span class="text-gray-200">Creative Picture Gallery</span>
+    </h2>
+    <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+      The <strong>Realtime Output Dual System Studio</strong> is engineered for seamless, multi-platform deployment, prioritising speed and visual quality. This is the source.
+    </p>
+  </section>
+
+  <!-- BYTECHAT SYNC BANNER -->
+  <div class="sync-panel mb-10">
+    <svg width="28" height="28" fill="none" viewBox="0 0 24 24" style="flex-shrink:0"><path d="M8 12h8M8 8h5M6 20l-3 2V5a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H6z" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:15px;margin-bottom:3px;">ByteChat Integration</div>
+      <div style="font-size:13px;color:#6b7280" id="syncStatusText">Sign in to sync your RODSS account with ByteChat — share images and continue conversations.</div>
+    </div>
+    <button class="sync-connect-btn" id="syncBtn" onclick="handleByteChatSync()">Connect ByteChat</button>
+  </div>
+
+  <!-- 01: Live Output Feeds -->
+  <section id="command-center" class="py-16">
+    <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">| 01. Live Output Feeds |</h3>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div class="lg:col-span-1 studio-card rounded-xl p-6 flex flex-col items-center">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M16 3H8a2 2 0 00-2 2v14a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2zM8 1h8a4 4 0 014 4v14a4 4 0 01-4 4H8a4 4 0 01-4-4V5a4 4 0 014-4zM12 18a1 1 0 100-2 1 1 0 000 2z"/></svg>
+          <h4 class="text-2xl font-bold text-white">Video Feed: @Bytestorm.corporation</h4>
+        </div>
+        <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
+          <iframe src="https://www.tiktok.com/embed/7570408400958524694" style="width:100%;height:100%;border:none;border-radius:.75rem" allowfullscreen scrolling="no" allow="encrypted-media; autoplay;" title="Bytestorm TikTok"></iframe>
+        </div>
+      </div>
+      <div class="lg:col-span-2 studio-card rounded-xl p-6">
+        <div class="flex items-center space-x-3 mb-4">
+          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1zM5 17h14V7H5v10zm3.5-8a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM15 15.5l-3-3-4 4v1h7l-3-2z"/></svg>
+          <h4 class="text-2xl font-bold text-white">Showcase Photos</h4>
+        </div>
+        <p class="text-sm text-gray-400 mb-4">Hover any image to open it in the photo editor (sign in required).</p>
+        <div id="showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+        <p id="photoCount" class="text-right text-xs mt-4 text-gray-500"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02: TikTok Comment Photos -->
+  <section id="tiktok-comments" class="py-16">
+    <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">| 02. TikTok Comment Section Photos |</h3>
+    <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">A curated selection of images perfect for comment section replies or short-form reactions.</p>
+    <div id="tiktok-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
+    <p id="tiktokCount" class="text-right text-xs mt-4 text-gray-500"></p>
+  </section>
+
+  <!-- 03: Wallpaper Gallery -->
+  <section id="wallpaper-gallery" class="py-16">
+    <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">| 03. Wallpaper Gallery |</h3>
+    <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">High-resolution images suitable for desktop and mobile backgrounds.</p>
+    <div id="wallpaper-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
+    <p id="wallpaperCount" class="text-right text-xs mt-4 text-gray-500"></p>
+  </section>
+
+  <!-- 04: Recommended PFPs -->
+  <section id="pfp-gallery" class="py-16">
+    <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">| 04. Recommended PFPs |</h3>
+    <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">Optimised, high-impact images suitable for profile pictures across all social media platforms.</p>
+    <div id="pfp-showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+    <p id="pfpCount" class="text-right text-xs mt-4 text-gray-500"></p>
+  </section>
+
+  <!-- ★ 05: USER POSTS -->
+  <section id="user-posts-section" class="py-16">
+    <h3 class="text-4xl font-bold mb-4 text-center text-white border-b-2 border-gray-700 pb-4">| 05. User Posts |</h3>
+    <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">Images shared by the RODSS community. Sign in and post yours.</p>
+
+    <!-- Upload panel — visible only when logged in -->
+    <div id="uploadPostPanel" class="upload-post-panel hidden mb-8" onclick="document.getElementById('postImageInput').click()">
+      <div style="font-size:2rem;margin-bottom:10px;">📸</div>
+      <div style="font-size:1rem;font-weight:700;color:#e5e7eb;margin-bottom:6px;">Share a Photo</div>
+      <div style="font-size:13px;color:#6b7280;">Click to choose an image from your device</div>
+      <input type="file" id="postImageInput" accept="image/*" style="display:none" onchange="handlePostUpload(event)">
+    </div>
+
+    <!-- Login gate — visible when logged out -->
+    <div id="uploadLoginGate" class="login-gate mb-8">
+      <div class="login-gate-title">📸 Want to post your own image?</div>
+      <div class="login-gate-sub">Sign in or create a free account to share photos with the community.</div>
+      <button class="login-gate-btn" onclick="openModal('loginModal')">Sign In to Post</button>
+    </div>
+
+    <!-- Posts grid -->
+    <div id="userPostsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;" id="noPostsMsg">No community posts yet — be the first!</div>
+    </div>
+  </section>
+
+  <!-- 06: Additional TikTok Vertical Feeds -->
+  <section id="tiktok-gallery-additional" class="py-16">
+    <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-pink-700 pb-4">| 06. Additional TikTok Vertical Feeds |</h3>
+    <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">Supplementary vertical video feeds using the permissive TikTok embed protocol.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="studio-card rounded-xl p-6 flex flex-col items-center">
+        <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
+          <iframe src="https://www.tiktok.com/embed/7152859867718536494" style="width:100%;height:100%;border:none;border-radius:.75rem" allowfullscreen scrolling="no" allow="encrypted-media; autoplay;" title="TikTok 2"></iframe>
+        </div>
+      </div>
+      <div class="studio-card rounded-xl p-6 flex flex-col items-center">
+        <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
+          <iframe src="https://www.tiktok.com/embed/7506221496151395590" style="width:100%;height:100%;border:none;border-radius:.75rem" allowfullscreen scrolling="no" allow="encrypted-media; autoplay;" title="TikTok 3"></iframe>
+        </div>
+      </div>
+      <div class="studio-card rounded-xl p-6 flex flex-col items-center">
+        <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
+          <iframe src="https://www.tiktok.com/embed/7515022720476794120" style="width:100%;height:100%;border:none;border-radius:.75rem" allowfullscreen scrolling="no" allow="encrypted-media; autoplay;" title="TikTok 4"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="mt-16 p-6 border-t border-gray-800 text-center text-gray-500">
+  <p>&copy; <span id="currentYear"></span> RODSS Studio. Realtime Output Dual System Architecture.</p>
+  <p class="text-xs mt-1 text-gray-600">Made by Bytestorm</p>
+  <p class="text-xs mt-1">Design optimised for mobile and command efficiency.</p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-backdrop" id="loginModal" onclick="backdropClose(event,'loginModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+    <h2>Sign In</h2>
+    <p class="sub">Access RODSS Studio and sync with ByteChat.</p>
+    <button class="social-btn" onclick="socialLogin('google')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>
+    <button class="social-btn" onclick="socialLogin('apple')"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>Continue with Apple</button>
+    <button class="social-btn" onclick="socialLogin('microsoft')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#00a4ef" d="M13 1h10v10H13z"/><path fill="#7fba00" d="M1 13h10v10H1z"/><path fill="#ffb900" d="M13 13h10v10H13z"/></svg>Continue with Outlook / Microsoft</button>
+    <div class="divider">or sign in with email</div>
+    <input class="form-input" type="email" id="loginEmail" placeholder="Email address">
+    <input class="form-input" type="password" id="loginPassword" placeholder="Password">
+    <button class="submit-btn" onclick="emailLogin()">Sign In</button>
+    <p style="text-align:center;font-size:12px;color:#6b7280;margin-top:14px;">Don't have an account? <span style="color:#e5e7eb;cursor:pointer;text-decoration:underline" onclick="switchToRegister()">Create one</span></p>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal-backdrop" id="registerModal" onclick="backdropClose(event,'registerModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+    <h2>Create Account</h2>
+    <p class="sub">Join RODSS Studio — free forever.</p>
+    <button class="social-btn" onclick="socialLogin('google')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Sign up with Google</button>
+    <button class="social-btn" onclick="socialLogin('apple')"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>Sign up with Apple</button>
+    <button class="social-btn" onclick="socialLogin('microsoft')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#00a4ef" d="M13 1h10v10H13z"/><path fill="#7fba00" d="M1 13h10v10H1z"/><path fill="#ffb900" d="M13 13h10v10H13z"/></svg>Sign up with Outlook / Microsoft</button>
+    <div class="divider">or register with email</div>
+    <input class="form-input" type="text"     id="regName"     placeholder="Display name">
+    <input class="form-input" type="email"    id="regEmail"    placeholder="Email address">
+    <input class="form-input" type="password" id="regPassword" placeholder="Password (min. 6 characters)">
+    <button class="submit-btn" onclick="emailRegister()">Create Account</button>
+    <p style="text-align:center;font-size:12px;color:#6b7280;margin-top:14px;">Already have an account? <span style="color:#e5e7eb;cursor:pointer;text-decoration:underline" onclick="switchToLogin()">Sign in</span></p>
+  </div>
+</div>
+
+<!-- PHOTO EDITOR MODAL -->
+<div class="modal-backdrop" id="editorModal" onclick="backdropClose(event,'editorModal')">
+  <div class="modal" style="max-width:720px;width:95vw">
+    <button class="modal-close" onclick="closeModal('editorModal')">&times;</button>
+    <h2>Photo Editor</h2>
+    <p class="sub">Adjust, filter, and download your image.</p>
+    <div class="editor-canvas-wrap">
+      <canvas id="editorCanvas"></canvas>
+      <div id="noImgMsg" style="position:absolute;color:#6b7280;font-size:13px;text-align:center">Click an image in the gallery<br>or upload one below.</div>
+    </div>
+    <label style="display:block;margin-bottom:14px">
+      <input type="file" id="editorUpload" accept="image/*" style="display:none" onchange="loadUploadedImage(event)">
+      <span style="display:inline-block;padding:8px 16px;border:1px dashed #374151;border-radius:8px;font-size:12px;color:#6b7280;cursor:pointer">⬆ Upload from device</span>
+    </label>
+    <div class="editor-controls">
+      <div class="slider-group"><label>Brightness <span id="brightnessVal">100</span></label><input type="range" id="brightness" min="0" max="200" value="100" oninput="applyFilters()"></div>
+      <div class="slider-group"><label>Contrast <span id="contrastVal">100</span></label><input type="range" id="contrast" min="0" max="200" value="100" oninput="applyFilters()"></div>
+      <div class="slider-group"><label>Saturation <span id="saturationVal">100</span></label><input type="range" id="saturation" min="0" max="200" value="100" oninput="applyFilters()"></div>
+      <div class="slider-group"><label>Blur <span id="blurVal">0</span></label><input type="range" id="blur" min="0" max="20" value="0" oninput="applyFilters()"></div>
+      <div class="slider-group"><label>Hue Shift <span id="hueVal">0</span></label><input type="range" id="hue" min="0" max="360" value="0" oninput="applyFilters()"></div>
+      <div class="slider-group"><label>Grayscale <span id="grayscaleVal">0</span></label><input type="range" id="grayscale" min="0" max="100" value="0" oninput="applyFilters()"></div>
+    </div>
+    <div style="margin-top:14px">
+      <p style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Quick Filters</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="crop-btn" onclick="applyPreset('none')">Original</button>
+        <button class="crop-btn" onclick="applyPreset('noir')">Noir</button>
+        <button class="crop-btn" onclick="applyPreset('vivid')">Vivid</button>
+        <button class="crop-btn" onclick="applyPreset('cool')">Cool</button>
+        <button class="crop-btn" onclick="applyPreset('warm')">Warm</button>
+        <button class="crop-btn" onclick="applyPreset('fade')">Fade</button>
+        <button class="crop-btn" onclick="applyPreset('dramatic')">Dramatic</button>
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <p style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Transform</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="crop-btn" onclick="rotateImage(-90)">↺ Rotate L</button>
+        <button class="crop-btn" onclick="rotateImage(90)">↻ Rotate R</button>
+        <button class="crop-btn" onclick="flipImage('h')">⇔ Flip H</button>
+        <button class="crop-btn" onclick="flipImage('v')">⇕ Flip V</button>
+      </div>
+    </div>
+    <div class="editor-actions">
+      <button onclick="resetFilters()">↺ Reset</button>
+      <button onclick="document.getElementById('editorUpload').click()">📁 Upload</button>
+      <button class="primary-action" onclick="downloadEdited()">⬇ Download PNG</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE MODULE -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut as fbSignOut,
+         GoogleAuthProvider, OAuthProvider, signInWithPopup,
+         createUserWithEmailAndPassword, signInWithEmailAndPassword,
+         updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getDatabase, ref, set, get, push, onValue } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+
+const app  = initializeApp({
+  apiKey:"AIzaSyAY49sWaN-DSKV10uyBB3CeOiABLCtFrSI",
+  authDomain:"bytestorm-friebase-server.firebaseapp.com",
+  databaseURL:"https://bytestorm-friebase-server-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"bytestorm-friebase-server",
+  storageBucket:"bytestorm-friebase-server.firebasestorage.app",
+  messagingSenderId:"400056781433",
+  appId:"1:400056781433:web:aab98f18df3f6b7c7f62a8",
+  measurementId:"G-9LWS8222EL"
+});
+const auth = getAuth(app);
+const db   = getDatabase(app);
+
+window._fbSignOut        = () => fbSignOut(auth);
+window._fbLoginGoogle    = () => signInWithPopup(auth, new GoogleAuthProvider());
+window._fbLoginMicrosoft = () => { const p=new OAuthProvider('microsoft.com'); p.setCustomParameters({prompt:'select_account'}); return signInWithPopup(auth,p); };
+window._fbLoginApple     = () => { const p=new OAuthProvider('apple.com'); p.addScope('email'); p.addScope('name'); return signInWithPopup(auth,p); };
+window._fbEmailLogin     = (e,p) => signInWithEmailAndPassword(auth,e,p);
+window._fbEmailRegister  = (e,p) => createUserWithEmailAndPassword(auth,e,p);
+window._fbUpdateProfile  = (u,d) => updateProfile(u,d);
+window._fbSetDB          = (path,val) => set(ref(db,path),val);
+window._fbGetDB          = (path) => get(ref(db,path));
+window._fbPushDB         = (path,val) => push(ref(db,path),val);
+
+// Live listener for user posts
+onValue(ref(db,'userPosts'), snap => {
+  const posts = [];
+  if(snap.exists()) snap.forEach(child => posts.unshift({id:child.key,...child.val()}));
+  window._renderUserPosts(posts);
+});
+
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    await set(ref(db,`users/${user.uid}/profile`),{name:user.displayName||'',email:user.email||'',photoURL:user.photoURL||'',lastSeen:Date.now()});
+    const snap = await get(ref(db,`users/${user.uid}/bytechatLinked`));
+    window._byteChatLinked = snap.exists() ? snap.val() : false;
+    window._firebaseUser = user;
+    window._renderLoggedIn(user);
+  } else {
+    window._firebaseUser = null;
+    window._byteChatLinked = false;
+    window._renderLoggedOut();
   }
 });
 </script>
 
-     <script defer src="/_vercel/insights/script.js"></script>
+<!-- MAIN JS -->
+<script>
+function toggleNav(){const n=document.getElementById('byteNav');n.style.display=n.style.display==='flex'?'none':'flex';}
+document.addEventListener('click',e=>{const w=document.getElementById('hamburgerWrap');if(!w.contains(e.target))document.getElementById('byteNav').style.display='none';});
+document.getElementById('currentYear').textContent=new Date().getFullYear();
 
-    <script defer src="/_vercel/speed-insights/script.js"></script>
-    
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <style>
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.classList.remove('show'),3200);}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function backdropClose(e,id){if(e.target.id===id)closeModal(id);}
+function switchToRegister(){closeModal('loginModal');openModal('registerModal');}
+function switchToLogin(){closeModal('registerModal');openModal('loginModal');}
+function toggleDropdown(){document.getElementById('userDropdown').classList.toggle('open');}
+document.addEventListener('click',e=>{const a=document.getElementById('authArea');if(a&&!a.contains(e.target))document.getElementById('userDropdown')?.classList.remove('open');});
 
-
-        /* Hamburger nav */
-#hamburgerWrap { position: fixed; top: 15px; left: 15px; z-index: 9999; font-family: monospace; }
-#hamburgerBtn {
-  cursor: pointer; background: #0a0a0a;
-  border: 1px solid #333; border-radius: 6px;
-  padding: 8px 12px; font-size: 18px;
-  color: white; user-select: none;
+// Open photo editor — only for logged-in users
+function openEditorModal(imageUrl){
+  if(!window._firebaseUser){
+    showToast('Sign in to use the Photo Editor.','error');
+    openModal('loginModal');
+    return;
+  }
+  openModal('editorModal');
+  document.getElementById('userDropdown').classList.remove('open');
+  if(imageUrl) openEditorWithImage(imageUrl);
 }
-#byteNav {
-  display: none; flex-direction: column;
-  gap: 8px; margin-top: 8px;
-  background: #0a0a0a; border: 1px solid #333;
-  border-radius: 6px; padding: 10px; min-width: 180px;
+
+// Gallery edit click handler — gated
+function galleryEditClick(url){
+  if(!window._firebaseUser){
+    showToast('Sign in to edit photos.','error');
+    openModal('loginModal');
+    return;
+  }
+  openEditorModal(url);
 }
-#byteNav a {
-  color: #fff; text-decoration: none;
-  padding: 6px 10px; border-radius: 4px;
-  border: 1px solid #222;
-  display: flex; align-items: center; gap: 8px;
-  font-size: 13px;
+
+window._renderLoggedIn=function(user){
+  const name=user.displayName||user.email?.split('@')[0]||'RODSS User';
+  document.getElementById('loggedOut').style.display='none';
+  document.getElementById('loggedIn').style.display='block';
+  document.getElementById('userAvatar').textContent=name.slice(0,1).toUpperCase();
+  document.getElementById('dropdownName').textContent=name;
+  document.getElementById('dropdownEmail').textContent=user.email||'';
+  // show upload panel, hide login gate
+  document.getElementById('uploadPostPanel').classList.remove('hidden');
+  document.getElementById('uploadLoginGate').style.display='none';
+  updateSyncPanel();
+  renderAllGalleries(); // re-render to show edit buttons
+};
+window._renderLoggedOut=function(){
+  document.getElementById('loggedOut').style.display='flex';
+  document.getElementById('loggedIn').style.display='none';
+  document.getElementById('userDropdown').classList.remove('open');
+  // hide upload panel, show login gate
+  document.getElementById('uploadPostPanel').classList.add('hidden');
+  document.getElementById('uploadLoginGate').style.display='';
+  updateSyncPanel();
+  renderAllGalleries(); // re-render to show lock overlays
+};
+
+function updateSyncPanel(){
+  const badge=document.getElementById('syncBadge'),btn=document.getElementById('syncBtn'),txt=document.getElementById('syncStatusText'),user=window._firebaseUser;
+  if(!user){btn.className='sync-connect-btn';btn.textContent='Connect ByteChat';txt.textContent='Sign in to sync your RODSS account with ByteChat — share images and continue conversations.';if(badge)badge.style.display='none';return;}
+  if(window._byteChatLinked){btn.className='sync-connect-btn connected';btn.textContent='✓ Synced';txt.textContent=`ByteChat is synced as ${user.email}.`;if(badge)badge.style.display='inline-flex';}
+  else{btn.className='sync-connect-btn';btn.textContent='Connect ByteChat';txt.textContent='Your RODSS account is ready — click to link ByteChat.';if(badge)badge.style.display='none';}
 }
-#byteNav a:hover { background: #1a1a1a; }
 
-    
-        /* Base styles and variables */
-        :root {
-            --accent-color: #ffffff;
-            --bg-color: #000000;
-            --card-color: #1a1a1a;
-            font-family: 'Inter', sans-serif;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: #e5e7eb;
-            transition: background-color 0.3s ease;
-        }
-        .studio-title-glow {
-            color: var(--accent-color);
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.5);
-        }
-        /* Custom Scrollbar for dark theme */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: #9ca3af;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background-color: #1f2937;
-        }
-        /* Aspect ratio specifically for the TikTok vertical video */
-        .tiktok-aspect {
-            aspect-ratio: 9/16;
-            width: 100%;
-            min-height: 400px;
-            max-height: 70vh;
-        }
-        /* Consistent card styling with hover effect */
-        .studio-card {
-            background-color: var(--card-color);
-            border: 1px solid #374151;
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .studio-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 0.1);
-        }
-    </style>
-</head>
-<body class="min-h-screen">
+async function socialLogin(provider){
+  try{const fn={google:'_fbLoginGoogle',apple:'_fbLoginApple',microsoft:'_fbLoginMicrosoft'}[provider];await window[fn]();closeModal('loginModal');closeModal('registerModal');showToast('Signed in!','success');}
+  catch(e){showToast(e.message?.replace('Firebase: ','')||'Sign in failed.','error');}
+}
+async function emailLogin(){
+  const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPassword').value;
+  if(!email||!pass){showToast('Please fill in all fields.','error');return;}
+  try{await window._fbEmailLogin(email,pass);closeModal('loginModal');showToast('Welcome back!','success');}
+  catch(e){showToast(e.code==='auth/invalid-credential'?'Wrong email or password.':e.message?.replace('Firebase: ',''),'error');}
+}
+async function emailRegister(){
+  const name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim(),pass=document.getElementById('regPassword').value;
+  if(!name||!email||!pass){showToast('Please fill in all fields.','error');return;}
+  if(pass.length<6){showToast('Password must be at least 6 characters.','error');return;}
+  try{const cred=await window._fbEmailRegister(email,pass);await window._fbUpdateProfile(cred.user,{displayName:name});closeModal('registerModal');showToast(`Welcome, ${name}!`,'success');}
+  catch(e){showToast(e.code==='auth/email-already-in-use'?'Email already registered.':e.message?.replace('Firebase: ',''),'error');}
+}
+async function signOut(){await window._fbSignOut();showToast('Signed out.');}
+async function handleByteChatSync(){
+  const user=window._firebaseUser;
+  if(!user){openModal('loginModal');return;}
+  if(window._byteChatLinked){showToast('ByteChat is already synced!','success');return;}
+  showToast('Connecting to ByteChat…');
+  try{await window._fbSetDB(`users/${user.uid}/bytechatLinked`,true);window._byteChatLinked=true;updateSyncPanel();showToast('ByteChat synced!','success');}
+  catch(e){showToast('Sync failed — check your Firebase rules.','error');}
+}
 
-    <!-- Third-Party Consent Manager Script (Kept as per your original file) -->
-    <script type="text/javascript" data-cmp-ab="1" src="https://cdn.consentmanager.net/delivery/autoblocking/509cf33812608.js" data-cmp-host="d.delivery.consentmanager.net" data-cmp-cdn="cdn.consentmanager.net" data-cmp-codesrc="16"></script>
+// ── GALLERY RENDER ──
+function renderGallery(photos,containerId,countId){
+  const container=document.getElementById(containerId),countEl=document.getElementById(countId);
+  if(!container)return;
+  const loggedIn=!!window._firebaseUser;
+  if(!photos.length){container.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;">No content yet.</div>`;return;}
+  container.innerHTML=photos.map(p=>`
+    <div class="gallery-item" onclick="galleryEditClick('${p.url}')">
+      <img src="${p.url}" alt="${p.alt}" loading="lazy" onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'">
+      ${loggedIn
+        ? `<div class="edit-overlay"><button class="edit-overlay-btn">Edit Photo</button></div>`
+        : `<div class="edit-overlay-locked"><span class="lock-icon">🔒</span><span class="lock-label">Sign in to edit</span></div>`
+      }
+    </div>`).join('');
+  if(countEl)countEl.textContent=`Showing ${photos.length} curated works.`;
+}
 
-    <!-- Header / Navigation Bar -->
-    <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-sm shadow-md p-4 border-b border-gray-800">
-        <div class="max-w-7xl mx-auto flex justify-center items-center">
-            <h1 class="text-3xl font-extrabold tracking-widest uppercase studio-title-glow text-white">
-                R O D S S
-            </h1>
+const ownerPhotos=[
+  {url:"https://www.digitaltrends.com/wp-content/uploads/2018/05/bmw-m5-competition-f90.jpg",alt:"BMW M5 Competition"},
+  {url:"https://i.pinimg.com/736x/cc/1a/1c/cc1a1c6f44b7c44a9ab1e85d66ee2adf.jpg",alt:"Abstract Digital Art"},
+  {url:"https://printler.com/media/photo/190002.jpg",alt:"Porsche GT3 RS"},
+  {url:"https://as1.ftcdn.net/v2/jpg/01/82/53/40/1000_F_182534068_hZ0URB0k1Pc7qtsclIkoI4UmzGzR015Y.jpg",alt:"Abstract Energy Field"},
+  {url:"https://m.media-amazon.com/images/S/pv-target-images/f285b19f4c1e35b0a6a830ae98b10a6faf8559adce79c99e9b66c5ae8417dc1c.jpg",alt:"Anime Girl"},
+  {url:"https://www-europe.nissan-cdn.net/content/dam/Nissan/global/vehicles/gt-r/r35/2_minor_change/nismo/16tdieulhd_GT-R_NISMO_Helios_001.jpg.ximg.l_full_m.smart.jpg",alt:"Nissan GT-R NISMO"},
+  {url:"https://i.pinimg.com/736x/d7/b2/c7/d7b2c74ddd53a308141d7d368cd275bd.jpg",alt:"Anime Art"},
+  {url:"https://static.wikitide.net/kaoruhanawiki/e/e5/Kaoruko_Portal_Color.png",alt:"Kaoruko Portal"},
+  {url:"https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg",alt:"AMD Ryzen 5 9600X"},
+  {url:"https://i.imgur.com/q3BVvn7.jpeg",alt:"PC Setup"},
+  {url:"https://i.pinimg.com/736x/57/3b/96/573b960830135a635f4e4f8932a78741.jpg",alt:"Utahime Anime"},
+  {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMkn6pw4OPPzXp-rvEK4xvhxg5mUcFnovP5g&s",alt:"Audi RS6 ABT"},
+  {url:"https://www.watson.de/imgdb/ef6d/Qx,F,0,0,2000,1123,833,467,333,187/6282237402471690",alt:"George Russell"}
+];
+const tiktokCommentPhotos=[
+  {url:"https://media1.tenor.com/m/9SmwhhaifUkAAAAC/mimimi-clash-royale.gif",alt:"Clash Royale Mimimi GIF"},
+  {url:"https://i1.sndcdn.com/artworks-yAUqyDfIhNuf1bXX-heZuPQ-t500x500.jpg",alt:"Clash Royale HEHEHE"},
+  {url:"https://i1.sndcdn.com/artworks-ogFABKtUmdqC2yGB-Po2Mlg-t240x240.jpg",alt:"Hoi De Dabpn"},
+  {url:"https://media.tenor.com/HerDQQmGANkAAAAM/peepobeer.png",alt:"Frog Beer"},
+  {url:"https://i.pinimg.com/736x/02/cd/19/02cd190a6d92ff7305e82a1bec52b009.jpg",alt:"Jisoo"},
+  {url:"https://i.pinimg.com/736x/6e/65/b2/6e65b228897e2fe40267f81f9f684154.jpg",alt:"BTS"},
+  {url:"https://i.pinimg.com/564x/32/0d/ab/320dabfc27891f5da5b73dffb8f57247.jpg",alt:"Reaction Meme"},
+  {url:"https://i.imgur.com/WMBo8rQ.jpeg",alt:"Cute Cat"},
+  {url:"https://i.redd.it/kktv0b7qssof1.jpeg",alt:"Too European"},
+  {url:"https://i.redd.it/cwlqifgm0isf1.jpeg",alt:"Orban"},
+  {url:"https://preview.redd.it/they-put-the-austrian-flag-instead-of-the-american-one-v0-k8zjqqf1i8mf1.jpeg?width=1168&auto=webp&s=3faed596f81d73fa25de80b22d8c449c20052cc0",alt:"Austria Flag Meme"},
+  {url:"https://media.tenor.com/AaJmp0H5xcYAAAAM/jarvis-cyber-bullying.gif",alt:"Jarvis GIF"},
+  {url:"https://i.imgur.com/hsPIdzV.jpeg",alt:"YT Shorts Reaction"},
+  {url:"https://i.ytimg.com/vi/AAgD47YoCpQ/hq720.jpg",alt:"Truth Detector"},
+  {url:"https://ih1.redbubble.net/image.5864800858.6317/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg",alt:"Not Dying For You"},
+  {url:"https://media.tenor.com/ZUwTmRub8yoAAAAM/gooner-goon.gif",alt:"Gooner GIF"}
+];
+const wallpaperPhotos=[
+  {url:"https://images4.alphacoders.com/123/1238811.jpg",alt:"Maybach Wallpaper"},
+  {url:"https://i.pinimg.com/736x/d9/b2/27/d9b227a4b8622f3362cc55fc1d0ea62d.jpg",alt:"Waguri Wallpaper"},
+  {url:"https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?fm=jpg&q=60&w=3000",alt:"Porsche 911 Wallpaper"},
+  {url:"https://wallpaperbat.com/img/789393-4k-corsair-wallpaper-top-free-4k-corsair-background.png",alt:"Corsair Wallpaper"},
+  {url:"https://c4.wallpaperflare.com/wallpaper/206/833/289/anime-artwork-anime-girls-the-duomo-porsche-hd-wallpaper-preview.jpg",alt:"Porsche Anime Wallpaper"},
+  {url:"https://getwallpapers.com/wallpaper/full/2/7/0/498680.jpg",alt:"Miku Wallpaper"},
+  {url:"https://backiee.com/static/wallpapers/560x315/410808.jpg",alt:"Dark Anime Wallpaper"},
+  {url:"https://wallpapercg.com/media/ts_2x/9417.webp",alt:"Naruto Dark Wallpaper"},
+  {url:"https://4kwallpapers.com/images/wallpapers/max-verstappen-f1-2560x1440-13972.jpeg",alt:"Max Verstappen Wallpaper"},
+  {url:"https://mir-s3-cdn-cf.behance.net/project_modules/1400/242e87157806817.637f8c2a5e729.jpg",alt:"George Russell Wallpaper"},
+  {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbga-0_WbrGfjcXt0FXYPTgDITDK71IG7HCg&s",alt:"PlayStation 4 Wallpaper"},
+  {url:"https://wallpapercave.com/wp/wp5441501.jpg",alt:"Retro Wallpaper"}
+];
+const recommendedPFPs=[
+  {url:"https://res.cloudinary.com/dmwcbhehi/image/upload/c_thumb,w_3840,g_auto/f_auto/q_auto/v1/911_GT3_R_Scrollsection_01-tradition_dhzmuw",alt:"Porsche 911 GT3 R PFP"},
+  {url:"https://cdn.pfps.gg/pfps/2855-bmw-fisheye.png",alt:"BMW Fisheye PFP"},
+  {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvYYq471rW44TZtr8YF4wNKWD1IyRr5fJZtQ&s",alt:"Dark Aesthetic Car PFP"},
+  {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Hacker_behind_PC.svg/500px-Hacker_behind_PC.svg.png",alt:"Hacker PFP"},
+  {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEVDVxdZHPfqU6uhN4Weuh_Ojc_Creh14Uwg&s",alt:"Gojo PFP"},
+  {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJY-wjjnPjkGFOy7ZDNrZVYxdgHzDICX3_JA&s",alt:"Utahime PFP"},
+  {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwm7qWlYOqfeALv5BsH2qVx6DQ69sj-Z6LuA&s",alt:"Utahime PFP Alt"},
+  {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMurjpITw9H5BBS0eaAhbXFMHUZzKV8pU1xw&s",alt:"Xiaomi Mascot PFP"}
+];
+
+function renderAllGalleries(){
+  renderGallery(ownerPhotos,'showcase','photoCount');
+  renderGallery(tiktokCommentPhotos,'tiktok-showcase','tiktokCount');
+  renderGallery(wallpaperPhotos,'wallpaper-showcase','wallpaperCount');
+  renderGallery(recommendedPFPs,'pfp-showcase','pfpCount');
+}
+renderAllGalleries();
+
+// ── USER POSTS ──
+function timeAgo(ts){
+  const diff=Date.now()-ts,m=Math.floor(diff/60000),h=Math.floor(m/60),d=Math.floor(h/24);
+  if(d>0)return `${d}d ago`;if(h>0)return `${h}h ago`;if(m>0)return `${m}m ago`;return 'just now';
+}
+
+window._renderUserPosts=function(posts){
+  const grid=document.getElementById('userPostsGrid');
+  const noMsg=document.getElementById('noPostsMsg');
+  if(!posts||!posts.length){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;" id="noPostsMsg">No community posts yet — be the first!</div>`;
+    return;
+  }
+  const loggedIn=!!window._firebaseUser;
+  grid.innerHTML=posts.map(p=>{
+    const initial=(p.userName||'?').slice(0,1).toUpperCase();
+    const editBtn=loggedIn
+      ? `<button class="user-post-edit-btn" onclick="galleryEditClick('${p.imageUrl}')">Edit</button>`
+      : `<button class="user-post-edit-btn" onclick="openModal('loginModal')" title="Sign in to edit">🔒</button>`;
+    return `
+      <div class="user-post-card">
+        <img src="${p.imageUrl}" alt="Post by ${p.userName}" loading="lazy"
+             onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'"
+             style="cursor:pointer" onclick="galleryEditClick('${p.imageUrl}')">
+        <div class="user-post-meta">
+          <div class="user-post-avatar">${initial}</div>
+          <div class="user-post-info">
+            <div class="user-post-name">${p.userName||'Anonymous'}</div>
+            <div class="user-post-time">${timeAgo(p.timestamp)}</div>
+          </div>
+          ${editBtn}
         </div>
-    </header>
+      </div>`;
+  }).join('');
+};
 
-    <main class="max-w-7xl mx-auto p-4 md:p-8">
+async function handlePostUpload(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const user=window._firebaseUser;
+  if(!user){showToast('Sign in to post images.','error');return;}
+  // Convert to base64 data URL (no external storage needed)
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    const dataUrl=ev.target.result;
+    // Warn if too large for Realtime DB (limit ~1MB per value)
+    if(dataUrl.length>900000){showToast('Image too large. Please use a smaller file (< ~600KB).','error');return;}
+    showToast('Uploading post…');
+    try{
+      await window._fbPushDB('userPosts',{
+        imageUrl:dataUrl,
+        userName:user.displayName||user.email?.split('@')[0]||'RODSS User',
+        userId:user.uid,
+        timestamp:Date.now()
+      });
+      showToast('Post shared!','success');
+      document.getElementById('postImageInput').value='';
+    }catch(err){showToast('Failed to post — check Firebase rules.','error');console.error(err);}
+  };
+  reader.readAsDataURL(file);
+}
 
-                 <!-- SEO START -->
-<title>Rodss Corporation</title>
-    
-<meta name="description" content="Rodss is an offical Bytestorm owned product that provieds really many things for bytesotrm Corporation.">
-
-<meta name="keywords" content="Rodss Corporation">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="canonical" href="https://rodss.vercel.app/">
-
-<meta name="robots" content="index, follow">
-
-<!-- Open Graph (Google + Social Preview) -->
-<meta property="og:title" content="Rodss - Image Studio">
-<meta property="og:description" content="Images, wallapapers and more.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://rodss.vercel.app/">
-<meta property="og:image" content="https://i.imgur.com/NLz6Jfd.png">
-
-<!-- Company Schema -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Bytestorm Corp",
-  "url": "https://rodss.vercel.app/",
-  "description": "Rodss or Realtime Output Dual system Studio is an Multi Media webapp that posts many images and hosts offical tiktok videos.",
-  "logo": "https://i.imgur.com/NLz6Jfd.png"
+// ── PHOTO EDITOR ──
+let editorImg=null,editorRotation=0,editorFlipH=false,editorFlipV=false;
+function openEditorWithImage(url){
+  const img=new Image();img.crossOrigin='anonymous';
+  img.onload=()=>{editorImg=img;editorRotation=0;editorFlipH=false;editorFlipV=false;resetSliders();document.getElementById('noImgMsg').style.display='none';drawCanvas();};
+  img.onerror=()=>showToast('Could not load image (CORS restriction).','error');
+  img.src=url;
+}
+function loadUploadedImage(e){
+  if(!window._firebaseUser){showToast('Sign in to use the Photo Editor.','error');openModal('loginModal');return;}
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{const img=new Image();img.onload=()=>{editorImg=img;editorRotation=0;editorFlipH=false;editorFlipV=false;resetSliders();document.getElementById('noImgMsg').style.display='none';drawCanvas();};img.src=ev.target.result;};
+  reader.readAsDataURL(file);
+}
+function buildFilterString(){
+  return `brightness(${document.getElementById('brightness').value}%) contrast(${document.getElementById('contrast').value}%) saturate(${document.getElementById('saturation').value}%) blur(${document.getElementById('blur').value}px) hue-rotate(${document.getElementById('hue').value}deg) grayscale(${document.getElementById('grayscale').value}%)`;
+}
+function drawCanvas(){
+  if(!editorImg)return;
+  const canvas=document.getElementById('editorCanvas'),rot=editorRotation,swapped=rot%180!==0;
+  const w=swapped?editorImg.naturalHeight:editorImg.naturalWidth,h=swapped?editorImg.naturalWidth:editorImg.naturalHeight;
+  const scale=Math.min(Math.min(650,window.innerWidth-80)/w,340/h,1);
+  canvas.width=Math.round(w*scale);canvas.height=Math.round(h*scale);
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.filter=buildFilterString();
+  ctx.save();ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rot*Math.PI/180);
+  if(editorFlipH)ctx.scale(-1,1);if(editorFlipV)ctx.scale(1,-1);
+  ctx.drawImage(editorImg,-editorImg.naturalWidth*scale/2,-editorImg.naturalHeight*scale/2,editorImg.naturalWidth*scale,editorImg.naturalHeight*scale);
+  ctx.restore();
+}
+function applyFilters(){
+  document.getElementById('brightnessVal').textContent=document.getElementById('brightness').value;
+  document.getElementById('contrastVal').textContent=document.getElementById('contrast').value;
+  document.getElementById('saturationVal').textContent=document.getElementById('saturation').value;
+  document.getElementById('blurVal').textContent=document.getElementById('blur').value;
+  document.getElementById('hueVal').textContent=document.getElementById('hue').value;
+  document.getElementById('grayscaleVal').textContent=document.getElementById('grayscale').value;
+  drawCanvas();
+}
+function resetSliders(){['brightness','contrast','saturation'].forEach(id=>document.getElementById(id).value=100);['blur','hue','grayscale'].forEach(id=>document.getElementById(id).value=0);applyFilters();}
+function resetFilters(){resetSliders();}
+const presets={none:{brightness:100,contrast:100,saturation:100,blur:0,hue:0,grayscale:0},noir:{brightness:90,contrast:130,saturation:0,blur:0,hue:0,grayscale:100},vivid:{brightness:110,contrast:130,saturation:180,blur:0,hue:0,grayscale:0},cool:{brightness:100,contrast:110,saturation:90,blur:0,hue:200,grayscale:0},warm:{brightness:110,contrast:100,saturation:120,blur:0,hue:30,grayscale:0},fade:{brightness:120,contrast:80,saturation:70,blur:0,hue:0,grayscale:10},dramatic:{brightness:80,contrast:170,saturation:110,blur:0,hue:0,grayscale:0}};
+function applyPreset(name){const p=presets[name];if(!p)return;Object.keys(p).forEach(k=>{document.getElementById(k).value=p[k];});applyFilters();}
+function rotateImage(deg){editorRotation=(editorRotation+deg+360)%360;drawCanvas();}
+function flipImage(axis){if(axis==='h')editorFlipH=!editorFlipH;else editorFlipV=!editorFlipV;drawCanvas();}
+function downloadEdited(){
+  if(!editorImg){showToast('No image loaded.','error');return;}
+  const rot=editorRotation,swapped=rot%180!==0,out=document.createElement('canvas');
+  out.width=swapped?editorImg.naturalHeight:editorImg.naturalWidth;
+  out.height=swapped?editorImg.naturalWidth:editorImg.naturalHeight;
+  const ctx2=out.getContext('2d');ctx2.filter=buildFilterString();ctx2.save();
+  ctx2.translate(out.width/2,out.height/2);ctx2.rotate(rot*Math.PI/180);
+  if(editorFlipH)ctx2.scale(-1,1);if(editorFlipV)ctx2.scale(1,-1);
+  ctx2.drawImage(editorImg,-editorImg.naturalWidth/2,-editorImg.naturalHeight/2);ctx2.restore();
+  const link=document.createElement('a');link.download='rodss-edit.png';link.href=out.toDataURL('image/png');link.click();
+  showToast('Image downloaded!','success');
 }
 </script>
-<!-- SEO END -->
-
-        <!-- Hero Section -->
-        <section class="text-center py-16">
-            <h2 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white">
-                <span class="text-gray-200">Studio Output Video</span>
-                <span class="studio-title-glow text-white">&</span>
-                <span class="text-gray-200">Creative Picture gallery</span>
-            </h2>
-            <p class="text-xl text-gray-400 max-w-3xl mx-auto">
-                The **Realtime Output Dual System Studio** is engineered for seamless, multi-platform deployment, prioritizing speed and visual quality. This is the source.
-            </p>
-        </section>
-
-        <!-- Section 01: Live Output Feeds (Video & Showcase) -->
-        <section id="command-center" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
-                | 01. Live Output Feeds |
-            </h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                
-                <!-- TikTok Live Feed Container (9:16 Aspect Ratio) -->
-                <div class="lg:col-span-1 studio-card rounded-xl p-6 flex flex-col items-center">
-                    <div class="flex items-center space-x-3 mb-6">
-                        <!-- Icon: Mobile Phone -->
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 3H8a2 2 0 00-2 2v14a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2zM8 1h8a4 4 0 014 4v14a4 4 0 01-4 4H8a4 4 0 01-4-4V5a4 4 0 014-4zM12 18a1 1 0 100-2 1 1 0 000 2z"/></svg>
-                        <h4 class="text-2xl font-bold text-white">Video Feed: @Bytestorm.corporation</h4>
-                    </div>
-
-                    <!-- TikTok Direct Iframe Embed with Error Detection -->
-                    <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
-                        <iframe 
-                            id="tiktok-iframe"
-                            src="https://www.tiktok.com/embed/7570408400958524694"
-                            style="width: 100%; height: 100%; border: none; border-radius: 0.75rem;"
-                            allowfullscreen
-                            scrolling="no"
-                            allow="encrypted-media; autoplay;"
-                            onload="console.log('✅ TikTok iframe loaded successfully')"
-                            onerror="console.error('❌ TikTok iframe failed to load'); document.getElementById('tiktok-error').style.display='block';"
-                        ></iframe>
-                        <!-- Fallback message for failed iframe loading -->
-                        <div id="tiktok-error" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; text-align:center; padding: 20px;">
-                            <p class="text-xl font-semibold">⚠️ TikTok video failed to load</p>
-                            <p class="text-sm mt-2 text-gray-400">The embed source might be blocked or removed.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Showcase Photo Gallery (Manual Uploads) -->
-                <div class="lg:col-span-2 studio-card rounded-xl p-6">
-                    <div class="flex items-center space-x-3 mb-6">
-                        <!-- Icon: Image/Photo -->
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1zM5 17h14V7H5v10zm3.5-8a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM15 15.5l-3-3-4 4v1h7l-3-2z"/></svg>
-                        <h4 class="text-2xl font-bold text-white">Showcase Photos</h4>
-                    </div>
-                    
-                    <p class="text-sm text-gray-400 mb-4">
-                        This gallery reflects photos manually uploaded by the owner. New additions populate instantly.
-                    </p>
-
-                    <div id="showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-                    <p id="photoCount" class="text-right text-xs mt-4 text-gray-500"></p>
-                </div>
-            </div>
-        </section>
-
-        <!-- --- -->
-
-        <!-- Section 02: TikTok Comment Section Photos -->
-        <section id="tiktok-comments" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
-                | 02. TikTok Comment Section Photos |
-            </h3>
-            
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
-                A curated selection of images perfect for comment section replies or short-form reactions.
-            </p>
-
-            <div id="tiktok-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
-            <p id="tiktokCount" class="text-right text-xs mt-4 text-gray-500"></p>
-        </section>
-
-        <!-- --- -->
-
-        <!-- Section 03: Wallpaper Gallery -->
-        <section id="wallpaper-gallery" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
-                | 03. Wallpaper Gallery |
-            </h3>
-            
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
-                High-resolution, high-quality images suitable for desktop and mobile backgrounds.
-            </p>
-
-            <div id="wallpaper-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
-            <p id="wallpaperCount" class="text-right text-xs mt-4 text-gray-500"></p>
-        </section>
-
-        <!-- --- -->
-
-        <!-- Section 04: Recommended PFPs -->
-        <section id="pfp-gallery" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">
-                | 04. Recommended PFPs |
-            </h3>
-            
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
-                Optimized, high-impact images suitable for profile pictures across all social media platforms.
-            </p>
-
-            <div id="pfp-showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-            <p id="pfpCount" class="text-right text-xs mt-4 text-gray-500"></p>
-        </section>
-        
-        <!-- --- -->
-        
-        <!-- Section 05: Additional TikTok Vertical Feeds (Replaces YouTube Links) -->
-        <section id="tiktok-gallery-additional" class="py-16">
-            <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-pink-700 pb-4">
-                | 05. Additional TikTok Vertical Feeds |
-            </h3>
-            
-            <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
-                These are supplementary vertical video feeds using the permissive TikTok embed protocol.
-            </p>
-
-            <!-- Grid updated to 3 columns for medium screens and up (md:grid-cols-3) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                <!-- Video 1 (Anime Edit) -->
-                <div class="studio-card rounded-xl p-6 flex flex-col items-center">
-                    <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
-                        <iframe 
-                            src="https://www.tiktok.com/embed/7152859867718536494"
-                            style="width: 100%; height: 100%; border: none; border-radius: 0.75rem;"
-                            allowfullscreen scrolling="no" allow="encrypted-media; autoplay;"
-                        ></iframe>
-                    </div>
-                </div>
-
-                <!-- Video 2 (Cooking Recipes) -->
-                <div class="studio-card rounded-xl p-6 flex flex-col items-center">
-                    <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
-                        <iframe 
-                            src="https://www.tiktok.com/embed/7506221496151395590"
-                            style="width: 100%; height: 100%; border: none; border-radius: 0.75rem;"
-                            allowfullscreen scrolling="no" allow="encrypted-media; autoplay;"
-                        ></iframe>
-                    </div>
-                </div>
-
-                <!-- NEW Video 3 (@zeyxck8) -->
-                <div class="studio-card rounded-xl p-6 flex flex-col items-center">
-                    <div class="tiktok-aspect w-full rounded-xl shadow-2xl bg-black relative overflow-hidden">
-                        <iframe 
-                            src="https://www.tiktok.com/embed/7515022720476794120"
-                            style="width: 100%; height: 100%; border: none; border-radius: 0.75rem;"
-                            allowfullscreen scrolling="no" allow="encrypted-media; autoplay;"
-                        ></iframe>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="mt-16 p-6 border-t border-gray-800 text-center text-gray-500">
-        <p>&copy; <span id="currentYear"></span> RODSS Studio. Realtime Output Dual System Architecture.</p>
-        <p class="text-xs mt-1 text-gray-600">Made by Bytestorm</p>
-        <p class="text-xs mt-1">Design optimized for mobile and command efficiency.</p>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-            // 1. Showcase Photos (Owner/Portfolio)
-            const ownerPhotos = [
-                {
-                    url: "https://www.digitaltrends.com/wp-content/uploads/2018/05/bmw-m5-competition-f90.jpg?fit=874%2C490&p=1", 
-                    alt: "Bmw M5 Competiton 2015"
-                },
-                { 
-                    url: "https://i.pinimg.com/736x/cc/1a/1c/cc1a1c6f44b7c44a9ab1e85d66ee2adf.jpg", 
-                    alt: "Abstract Digital Art" 
-                },
-                { url: "https://printler.com/media/photo/190002.jpg", 
-                 alt: "Porsche Gt3 rs" 
-                },
-                { 
-                    url: "https://as1.ftcdn.net/v2/jpg/01/82/53/40/1000_F_182534068_hZ0URB0k1Pc7qtsclIkoI4UmzGzR015Y.jpg",
-                    alt: "Abstract Tech/Energy Field" 
-                },
-                {
-                    url: "https://m.media-amazon.com/images/S/pv-target-images/f285b19f4c1e35b0a6a830ae98b10a6faf8559adce79c99e9b66c5ae8417dc1c.jpg", 
-                    alt: "Anime Girl"
-                },
-                {
-                    url: "https://www-europe.nissan-cdn.net/content/dam/Nissan/global/vehicles/gt-r/r35/2_minor_change/nismo/16tdieulhd_GT-R_NISMO_Helios_001.jpg.ximg.l_full_m.smart.jpg",
-                    alt: "Nissan GT-R NISMO"
-                },
-                {
-                    url: "https://i.pinimg.com/736x/d7/b2/c7/d7b2c74ddd53a308141d7d368cd275bd.jpg", 
-                    alt: "Gooner Anime"
-                },
-                {
-                    url: "https://static.wikitide.net/kaoruhanawiki/e/e5/Kaoruko_Portal_Color.png",
-                    alt: "Kaoruko Portal"
-                },
-                {
-                    url: "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg",
-                    alt: "AMD Ryzen 5 9600X"
-                },
-                { url: "https://i.imgur.com/q3BVvn7.jpeg", 
-                 alt: "PC Setup"
-                },
-                { 
-                    url: "https://i.pinimg.com/736x/57/3b/96/573b960830135a635f4e4f8932a78741.jpg",
-                    alt: "Utahime Anime"
-                },
-                {
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMkn6pw4OPPzXp-rvEK4xvhxg5mUcFnovP5g&s",
-                    alt: "Audi RS6 ABT"
-                },
-                {
-                    url: "https://www.watson.de/imgdb/ef6d/Qx,F,0,0,2000,1123,833,467,333,187/6282237402471690",
-                    alt: "George Russell",
-                }
-            ];
-
-            // 2. TikTok Comment Section Photos
-            const tiktokCommentPhotos = [
-                {
-                    url: "https://media1.tenor.com/m/9SmwhhaifUkAAAAC/mimimi-clash-royale.gif",
-                    alt: "Clash Royale Mimimi Reaction GIF"
-                },
-                {
-                    url: "https://i1.sndcdn.com/artworks-yAUqyDfIhNuf1bXX-heZuPQ-t500x500.jpg",
-                    alt: "Clash Royale HEHEHEHA" 
-                },
-                {
-                    url: "https://i1.sndcdn.com/artworks-ogFABKtUmdqC2yGB-Po2Mlg-t240x240.jpg",
-                    alt: "Hoi De Dabpn"
-                },
-                {
-                    url: "https://media.tenor.com/HerDQQmGANkAAAAM/peepobeer.png",
-                    alt: "Frogie Dude and the Beer" 
-                },
-
-                {
-                    url: "https://i.pinimg.com/736x/02/cd/19/02cd190a6d92ff7305e82a1bec52b009.jpg",
-                    alt: "Jisoo Sybau"
-                },
-                {
-                    url: "https://i.pinimg.com/736x/6e/65/b2/6e65b228897e2fe40267f81f9f684154.jpg",
-                    alt: "BTS" 
-                },
-                {
-                    url: "https://i.pinimg.com/564x/32/0d/ab/320dabfc27891f5da5b73dffb8f57247.jpg",
-                    alt: "Im Comming For U"
-                },
-                {
-                    url: "https://i.imgur.com/WMBo8rQ.jpeg",
-                    alt: "Cute Cat" 
-                },
-                {
-                    url: "https://i.redd.it/kktv0b7qssof1.jpeg",
-                    alt: "Im Too European For This" 
-                },
-                {
-                    url: "https://i.redd.it/cwlqifgm0isf1.jpeg",
-                    alt: "Orban" 
-                },
-                {
-                    url: "https://preview.redd.it/they-put-the-austrian-flag-instead-of-the-american-one-v0-k8zjqqf1i8mf1.jpeg?width=1168&auto=webp&s=3faed596f81d73fa25de80b22d8c449c20052cc0",
-                    alt: "Austria Mentioned" 
-                },
-                {
-                    url: "https://media.tenor.com/AaJmp0H5xcYAAAAM/jarvis-cyber-bullying.gif",
-                    alt: "Jarvis Cyberbully Mode On GIF"
-                },
-                {
-                    url: "https://i.imgur.com/hsPIdzV.jpeg",
-                    alt: "YT Shorts Over There"
-                },
-                {
-                    url: "https://i.ytimg.com/vi/AAgD47YoCpQ/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AG-B4AC0AWKAgwIABABGH8gEyghMA8=&rs=AOn4CLAwPBwAF3fErongkjmLru6zHjF9EQ",
-                    alt: "Truth Detector"
-                },
-                {
-                    url: "https://ih1.redbubble.net/image.5864800858.6317/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg",
-                    alt: "Not Dieing For Them"
-                },
-                {
-                    url: "https://media.tenor.com/ZUwTmRub8yoAAAAM/gooner-goon.gif",
-                    alt: "Yup Another Classic One GIF"
-                }
-            ];
-
-            // 3. Wallpaper Gallery
-            const wallpaperPhotos = [
-                {
-                    url: "https://images4.alphacoders.com/123/1238811.jpg",
-                    alt: "Maybach Wallpaper" 
-                },
-                { 
-                    url: "https://i.pinimg.com/736x/d9/b2/27/d9b227a4b8622f3362cc55fc1d0ea62d.jpg",
-                    alt: "Waguri Wallpaper"
-                },
-                {
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRovcleeJwK0OpgWIsUvbn_OscbD_f_QTqR0g&s",
-                    alt: "Waguri PC Wallpaper" 
-                },
-                { 
-                    url: "https://wallpaperbat.com/img/789393-4k-corsair-wallpaper-top-free-4k-corsair-background.png", 
-                    alt: "Corsair PC Wallpaper"
-                },
-                { 
-                    url: "https://c4.wallpaperflare.com/wallpaper/206/833/289/anime-artwork-anime-girls-the-duomo-porsche-hd-wallpaper-preview.jpg",
-                    alt: "Porsche Anime Wallpaper"
-                },
-                {
-                    url: "https://getwallpapers.com/wallpaper/full/2/7/0/498680.jpg",
-                    alt: "Miku Wallpaper"
-                },
-                {
-                    url: "https://backiee.com/static/wallpapers/560x315/410808.jpg",
-                    alt: "Dark Anime Girl Wallaper"
-                },
-                {
-                    url: "https://wallpapercg.com/media/ts_2x/9417.webp",
-                    alt: "Naturo Dark Wallaper"
-                },
-                {
-                    url: "https://4kwallpapers.com/images/wallpapers/max-verstappen-f1-2560x1440-13972.jpeg",
-                    alt: "Max verstappen Wallpaper"
-                }
-                   
-            ];
-
-            // 4. Recommended PFPs
-            const recommendedPFPs = [
-                // Note: These URLs are high-res and may take a moment to load if the CDN is slow.
-                {
-                    url: "https://res.cloudinary.com/dmwcbhehi/image/upload/c_thumb,w_3840,g_auto/f_auto/q_auto/v1/911_GT3_R_Scrollsection_01-tradition_dhzmuw?_a=BAVAZGDX0",
-                    alt: "Recommended PFP (Porsche 911 GT3 R)"
-                },
-                {
-                    url: "https://cdn.pfps.gg/pfps/2855-bmw-fisheye.png",
-                    alt: "Recommended PFP (BMW Fisheye)"
-                },
-                { 
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvYYq471rW44TZtr8YF4wNKWD1IyRr5fJZtQ&s",
-                    alt: "Recommended PFP (Dark Aesthetic Car)"
-                },
-                {
-                    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Hacker_behind_PC.svg/500px-Hacker_behind_PC.svg.png",
-                    alt: "Hacker PFP"
-                },
-                {
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEVDVxdZHPfqU6uhN4Weuh_Ojc_Creh14Uwg&s",
-                    alt: "Gojo PFP"
-                },
-                {
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJY-wjjnPjkGFOy7ZDNrZVYxdgHzDICX3_JA&s",
-                    alt: "Utahime PFP"
-                },
-                {
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwm7qWlYOqfeALv5BsH2qVx6DQ69sj-Z6LuA&s",
-                    alt: "Utagime PFP for Gooners"
-                },
-                {
-                    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMurjpITw9H5BBS0eaAhbXFMHUZzKV8pU1xw&s",
-                    alt: "Xiaomi Mascot PFP"
-                }
-                        
-            ];
-
-            /**
-             * Renders an array of photo objects into a specified container.
-             * @param {Array<Object>} photos - Array of { url, alt } objects.
-             * @param {string} containerId - ID of the container element (e.g., 'showcase').
-             * @param {string} countId - ID of the element to display the count (e.g., 'photoCount').
-             */
-            function renderGallery(photos, containerId, countId) {
-                const container = document.getElementById(containerId);
-                const countDisplay = document.getElementById(countId);
-                
-                if (!container) return;
-
-                if (photos.length === 0) {
-                    container.innerHTML = `
-                        <div class="col-span-full text-center py-10 rounded-lg border-2 border-dashed border-gray-700 bg-gray-900">
-                            <p class="text-xl text-white font-semibold mb-2">Content Feed Cleared.</p>
-                            <p class="text-sm text-gray-400">Add photo URLs to the associated data array in the script block.</p>
-                        </div>
-                    `;
-                    if (countDisplay) countDisplay.textContent = "No content currently loaded. Ready for import.";
-                } else {
-                    container.innerHTML = '';
-                    photos.forEach(photo => {
-                        const photoHtml = `
-                            <div class="relative aspect-square rounded-lg overflow-hidden studio-card border border-gray-700">
-                                <img 
-                                    src="${photo.url}" 
-                                    onerror="this.src='https://placehold.co/400x400/000000/ffffff?text=IMAGE+FAIL';"
-                                    alt="${photo.alt}" 
-                                    class="w-full h-full object-cover transition duration-300 hover:scale-[1.03]"
-                                >
-                            </div>
-                        `;
-                        container.innerHTML += photoHtml;
-                    });
-                    if (countDisplay) countDisplay.textContent = `Showing ${photos.length} curated works.`;
-                }
-            }
-
-            // Execute rendering for all galleries
-            renderGallery(ownerPhotos, 'showcase', 'photoCount');
-            renderGallery(tiktokCommentPhotos, 'tiktok-showcase', 'tiktokCount');
-            renderGallery(wallpaperPhotos, 'wallpaper-showcase', 'wallpaperCount');
-            renderGallery(recommendedPFPs, 'pfp-showcase', 'pfpCount');
-
-            console.log('✅ RODSS Page rendered successfully with all four content galleries.');
-        });
-        
-    </script>
-
 </body>
 </html>
-
-
-
-
