@@ -414,12 +414,13 @@
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut as fbSignOut,
-         GoogleAuthProvider, OAuthProvider, signInWithPopup,
+         GoogleAuthProvider, OAuthProvider,
+         signInWithRedirect, getRedirectResult,
          createUserWithEmailAndPassword, signInWithEmailAndPassword,
          updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getDatabase, ref, set, get, push, onValue } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
  
-const app  = initializeApp({
+const app = initializeApp({
   apiKey:"AIzaSyAY49sWaN-DSKV10uyBB3CeOiABLCtFrSI",
   authDomain:"bytestorm-friebase-server.firebaseapp.com",
   databaseURL:"https://bytestorm-friebase-server-default-rtdb.europe-west1.firebasedatabase.app",
@@ -432,10 +433,11 @@ const app  = initializeApp({
 const auth = getAuth(app);
 const db   = getDatabase(app);
  
+// ── Expose auth helpers ──
 window._fbSignOut        = () => fbSignOut(auth);
-window._fbLoginGoogle    = () => signInWithPopup(auth, new GoogleAuthProvider());
-window._fbLoginMicrosoft = () => { const p=new OAuthProvider('microsoft.com'); p.setCustomParameters({prompt:'select_account'}); return signInWithPopup(auth,p); };
-window._fbLoginApple     = () => { const p=new OAuthProvider('apple.com'); p.addScope('email'); p.addScope('name'); return signInWithPopup(auth,p); };
+window._fbLoginGoogle    = () => signInWithRedirect(auth, new GoogleAuthProvider());
+window._fbLoginMicrosoft = () => { const p=new OAuthProvider('microsoft.com'); p.setCustomParameters({prompt:'select_account'}); return signInWithRedirect(auth,p); };
+window._fbLoginApple     = () => { const p=new OAuthProvider('apple.com'); p.addScope('email'); p.addScope('name'); return signInWithRedirect(auth,p); };
 window._fbEmailLogin     = (e,p) => signInWithEmailAndPassword(auth,e,p);
 window._fbEmailRegister  = (e,p) => createUserWithEmailAndPassword(auth,e,p);
 window._fbUpdateProfile  = (u,d) => updateProfile(u,d);
@@ -443,32 +445,60 @@ window._fbSetDB          = (path,val) => set(ref(db,path),val);
 window._fbGetDB          = (path) => get(ref(db,path));
 window._fbPushDB         = (path,val) => push(ref(db,path),val);
  
-// Live listener for user posts — queue if render fn not ready yet
-onValue(ref(db,'userPosts'), snap => {
+// ── Save user profile to DB (name + photoURL) ──
+async function saveProfile(user) {
+  const profileRef = ref(db, `users/${user.uid}/profile`);
+  // Read existing profile first so we don't overwrite a custom photo
+  const snap = await get(profileRef);
+  const existing = snap.exists() ? snap.val() : {};
+  await set(profileRef, {
+    name: user.displayName || existing.name || '',
+    email: user.email || '',
+    photoURL: user.photoURL || existing.photoURL || '',
+    lastSeen: Date.now()
+  });
+  // Also store photoURL on window so posts can use it
+  window._userPhotoURL = user.photoURL || existing.photoURL || '';
+  window._userName = user.displayName || existing.name || user.email?.split('@')[0] || 'RODSS User';
+}
+ 
+// ── Handle redirect result on page load ──
+getRedirectResult(auth).then(result => {
+  if (result?.user) {
+    // Redirect sign-in succeeded — onAuthStateChanged will handle the rest
+    window._showToastWhenReady = { msg: `Welcome, ${result.user.displayName || result.user.email}!`, type: 'success' };
+  }
+}).catch(err => {
+  const msg = err.message?.replace('Firebase: ', '') || 'Sign in failed.';
+  window._showToastWhenReady = { msg, type: 'error' };
+});
+ 
+// ── Live user posts listener ──
+onValue(ref(db, 'userPosts'), snap => {
   const posts = [];
-  if(snap.exists()) snap.forEach(child => posts.unshift({id:child.key,...child.val()}));
-  if(typeof window._renderUserPosts === 'function') window._renderUserPosts(posts);
+  if (snap.exists()) snap.forEach(child => posts.unshift({ id: child.key, ...child.val() }));
+  if (typeof window._renderUserPosts === 'function') window._renderUserPosts(posts);
   else window._pendingPosts = posts;
 });
  
-// Queue auth state if render functions aren't defined yet (module loads before regular script)
-async function handleAuthUser(user) {
+// ── Auth state ──
+onAuthStateChanged(auth, async user => {
   if (user) {
-    await set(ref(db,`users/${user.uid}/profile`),{name:user.displayName||'',email:user.email||'',photoURL:user.photoURL||'',lastSeen:Date.now()});
-    const snap = await get(ref(db,`users/${user.uid}/bytechatLinked`));
+    await saveProfile(user);
+    const snap = await get(ref(db, `users/${user.uid}/bytechatLinked`));
     window._byteChatLinked = snap.exists() ? snap.val() : false;
     window._firebaseUser = user;
-    if(typeof window._renderLoggedIn === 'function') window._renderLoggedIn(user);
+    if (typeof window._renderLoggedIn === 'function') window._renderLoggedIn(user);
     else window._pendingAuthUser = user;
   } else {
     window._firebaseUser = null;
     window._byteChatLinked = false;
-    if(typeof window._renderLoggedOut === 'function') window._renderLoggedOut();
+    window._userPhotoURL = '';
+    window._userName = '';
+    if (typeof window._renderLoggedOut === 'function') window._renderLoggedOut();
     else window._pendingAuthUser = null;
   }
-}
- 
-onAuthStateChanged(auth, handleAuthUser);
+});
 </script>
  
 <!-- MAIN JS -->
@@ -509,17 +539,27 @@ function galleryEditClick(url){
 }
  
 window._renderLoggedIn=function(user){
-  const name=user.displayName||user.email?.split('@')[0]||'RODSS User';
+  const name=window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User';
+  const photo=window._userPhotoURL||user.photoURL||'';
   document.getElementById('loggedOut').style.display='none';
   document.getElementById('loggedIn').style.display='block';
-  document.getElementById('userAvatar').textContent=name.slice(0,1).toUpperCase();
+  // Show real profile photo if available, else initial letter
+  const avatar=document.getElementById('userAvatar');
+  if(photo){
+    avatar.innerHTML=`<img src="${photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='${name.slice(0,1).toUpperCase()}'">`;
+  } else {
+    avatar.textContent=name.slice(0,1).toUpperCase();
+  }
   document.getElementById('dropdownName').textContent=name;
   document.getElementById('dropdownEmail').textContent=user.email||'';
-  // show upload panel, hide login gate
   document.getElementById('uploadPostPanel').classList.remove('hidden');
   document.getElementById('uploadLoginGate').style.display='none';
   updateSyncPanel();
-  renderAllGalleries(); // re-render to show edit buttons
+  renderAllGalleries();
+  // Show any pending toast from redirect result
+  if(window._showToastWhenReady){
+    setTimeout(()=>{showToast(window._showToastWhenReady.msg,window._showToastWhenReady.type);delete window._showToastWhenReady;},300);
+  }
 };
  
 // Flush any auth/posts state that arrived before these functions were defined
@@ -553,8 +593,12 @@ function updateSyncPanel(){
 }
  
 async function socialLogin(provider){
-  try{const fn={google:'_fbLoginGoogle',apple:'_fbLoginApple',microsoft:'_fbLoginMicrosoft'}[provider];await window[fn]();closeModal('loginModal');closeModal('registerModal');showToast('Signed in!','success');}
-  catch(e){showToast(e.message?.replace('Firebase: ','')||'Sign in failed.','error');}
+  try{
+    closeModal('loginModal');closeModal('registerModal');
+    showToast('Redirecting to sign in…');
+    const fn={google:'_fbLoginGoogle',apple:'_fbLoginApple',microsoft:'_fbLoginMicrosoft'}[provider];
+    await window[fn](); // triggers redirect — page reloads on return
+  }catch(e){showToast(e.message?.replace('Firebase: ','')||'Sign in failed.','error');}
 }
 async function emailLogin(){
   const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPassword').value;
@@ -678,16 +722,20 @@ window._renderUserPosts=function(posts){
   const loggedIn=!!window._firebaseUser;
   grid.innerHTML=posts.map(p=>{
     const initial=(p.userName||'?').slice(0,1).toUpperCase();
+    const avatarHtml=p.userPhoto
+      ? `<img src="${p.userPhoto}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='<div class=\"user-post-avatar\">${initial}</div>'">`
+      : `<div class="user-post-avatar">${initial}</div>`;
+    const safeUrl=p.imageUrl.replace(/'/g,"\'");
     const editBtn=loggedIn
-      ? `<button class="user-post-edit-btn" onclick="galleryEditClick('${p.imageUrl}')">Edit</button>`
+      ? `<button class="user-post-edit-btn" onclick="galleryEditClick('${safeUrl}')">Edit</button>`
       : `<button class="user-post-edit-btn" onclick="openModal('loginModal')" title="Sign in to edit">🔒</button>`;
     return `
       <div class="user-post-card">
         <img src="${p.imageUrl}" alt="Post by ${p.userName}" loading="lazy"
              onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'"
-             style="cursor:pointer" onclick="galleryEditClick('${p.imageUrl}')">
+             style="cursor:pointer" onclick="galleryEditClick('${safeUrl}')">
         <div class="user-post-meta">
-          <div class="user-post-avatar">${initial}</div>
+          ${avatarHtml}
           <div class="user-post-info">
             <div class="user-post-name">${p.userName||'Anonymous'}</div>
             <div class="user-post-time">${timeAgo(p.timestamp)}</div>
@@ -713,7 +761,8 @@ async function handlePostUpload(e){
     try{
       await window._fbPushDB('userPosts',{
         imageUrl:dataUrl,
-        userName:user.displayName||user.email?.split('@')[0]||'RODSS User',
+        userName:window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User',
+        userPhoto:window._userPhotoURL||user.photoURL||'',
         userId:user.uid,
         timestamp:Date.now()
       });
