@@ -30,20 +30,20 @@
     .tiktok-aspect { aspect-ratio:9/16; width:100%; min-height:400px; max-height:70vh; }
     .studio-card { background-color:var(--card-color); border:1px solid #374151; box-shadow:0 4px 12px rgba(255,255,255,.05); transition:transform .3s ease,box-shadow .3s ease; }
     .studio-card:hover { transform:translateY(-3px); box-shadow:0 8px 16px rgba(255,255,255,.1),0 0 20px rgba(255,255,255,.1); }
- 
+
     /* hamburger */
     #hamburgerWrap{position:fixed;top:15px;left:15px;z-index:9999;font-family:monospace}
     #hamburgerBtn{cursor:pointer;background:#0a0a0a;border:1px solid #333;border-radius:6px;padding:8px 12px;font-size:18px;color:white;user-select:none}
     #byteNav{display:none;flex-direction:column;gap:8px;margin-top:8px;background:#0a0a0a;border:1px solid #333;border-radius:6px;padding:10px;min-width:180px}
     #byteNav a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:4px;border:1px solid #222;display:flex;align-items:center;gap:8px;font-size:13px}
     #byteNav a:hover{background:#1a1a1a}
- 
+
     /* auth */
     .auth-btn{background:#1a1a1a;border:1px solid #374151;color:#e5e7eb;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
     .auth-btn:hover{border-color:#9ca3af}
     .auth-btn.primary{background:#fff;border-color:#fff;color:#000}
     .auth-btn.primary:hover{opacity:.85}
- 
+
     /* modal */
     .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center}
     .modal-backdrop.open{display:flex}
@@ -62,7 +62,7 @@
     .form-input::placeholder{color:#6b7280}
     .submit-btn{width:100%;background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;padding:13px;border-radius:10px;cursor:pointer;margin-top:6px;transition:opacity .2s}
     .submit-btn:hover{opacity:.85}
- 
+
     /* user avatar + dropdown */
     .user-avatar{width:36px;height:36px;border-radius:50%;background:#fff;color:#000;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid transparent;transition:border-color .2s}
     .user-avatar:hover{border-color:#9ca3af}
@@ -76,7 +76,7 @@
     .sync-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;margin:6px 10px 0}
     .sync-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
- 
+
     /* gallery */
     .gallery-item{aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#1a1a1a;border:1px solid #374151;cursor:pointer;position:relative}
     .gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;display:block}
@@ -84,19 +84,19 @@
     .gallery-item .edit-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}
     .gallery-item:hover .edit-overlay{opacity:1}
     .edit-overlay-btn{background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:700;padding:8px 18px;border-radius:6px;cursor:pointer}
- 
+
     /* sync panel */
     .sync-panel{background:#111;border:1px solid #374151;border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
     .sync-connect-btn{background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:9px 20px;border-radius:8px;cursor:pointer;transition:opacity .2s;white-space:nowrap}
     .sync-connect-btn:hover{opacity:.85}
     .sync-connect-btn.connected{background:#1a1a1a;color:#4ade80;border:1px solid rgba(74,222,128,.4)}
- 
+
     /* toast */
     .toast{position:fixed;bottom:24px;right:24px;background:#1a1a1a;border:1px solid #374151;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;color:#e5e7eb;box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s ease}
     .toast.show{transform:translateY(0);opacity:1}
     .toast.success{border-color:rgba(74,222,128,.5);color:#4ade80}
     .toast.error{border-color:rgba(248,113,113,.5);color:#f87171}
- 
+
     /* photo editor */
     #editorModal .modal{max-width:720px;width:95vw}
     .editor-canvas-wrap{position:relative;background:#000;border-radius:10px;overflow:hidden;margin-bottom:16px;display:flex;align-items:center;justify-content:center;min-height:280px}
@@ -112,7 +112,7 @@
     .editor-actions button.primary-action:hover{opacity:.85;color:#000}
     .crop-btn{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid #374151;background:#1a1a1a;color:#6b7280;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
     .crop-btn:hover,.crop-btn.active{border-color:#9ca3af;color:#e5e7eb}
- 
+
     /* ── USER POSTS SECTION ── */
     .user-post-card{background:#111;border:1px solid #374151;border-radius:14px;overflow:hidden;transition:transform .3s,box-shadow .3s}
     .user-post-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(255,255,255,.08)}
@@ -124,19 +124,19 @@
     .user-post-time{font-size:10px;color:#6b7280}
     .user-post-edit-btn{font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid #374151;background:#1a1a1a;color:#9ca3af;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;flex-shrink:0}
     .user-post-edit-btn:hover{border-color:#9ca3af;color:#e5e7eb}
- 
+
     /* upload post panel */
     .upload-post-panel{background:#111;border:2px dashed #374151;border-radius:14px;padding:32px;text-align:center;transition:border-color .3s,background .3s;cursor:pointer}
     .upload-post-panel:hover{border-color:#6b7280;background:#161616}
     .upload-post-panel.hidden{display:none}
- 
+
     /* login gate */
     .login-gate{background:#111;border:1px solid #374151;border-radius:14px;padding:40px 24px;text-align:center}
     .login-gate-title{font-size:1.1rem;font-weight:700;color:#e5e7eb;margin-bottom:8px}
     .login-gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
     .login-gate-btn{background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:10px 24px;border-radius:8px;cursor:pointer;transition:opacity .2s}
     .login-gate-btn:hover{opacity:.85}
- 
+
     /* edit overlay with lock for guests */
     .gallery-item .edit-overlay-locked{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;transition:opacity .25s}
     .gallery-item:hover .edit-overlay-locked{opacity:1}
@@ -145,7 +145,7 @@
   </style>
 </head>
 <body class="min-h-screen">
- 
+
 <!-- HAMBURGER -->
 <div id="hamburgerWrap">
   <div id="hamburgerBtn" onclick="toggleNav()">&#9776;</div>
@@ -165,7 +165,7 @@
     </a>
   </div>
 </div>
- 
+
 <!-- HEADER — logo centred, auth on right -->
 <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-sm shadow-md p-4 border-b border-gray-800">
   <div class="max-w-7xl mx-auto relative flex items-center justify-center">
@@ -191,9 +191,9 @@
     </div>
   </div>
 </header>
- 
+
 <main class="max-w-7xl mx-auto p-4 md:p-8">
- 
+
   <!-- HERO -->
   <section class="text-center py-16">
     <h2 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white">
@@ -205,7 +205,7 @@
       The <strong>Realtime Output Dual System Studio</strong> is engineered for seamless, multi-platform deployment, prioritising speed and visual quality. This is the source.
     </p>
   </section>
- 
+
   <!-- BYTECHAT SYNC BANNER -->
   <div class="sync-panel mb-10">
     <svg width="28" height="28" fill="none" viewBox="0 0 24 24" style="flex-shrink:0"><path d="M8 12h8M8 8h5M6 20l-3 2V5a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H6z" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -215,7 +215,7 @@
     </div>
     <button class="sync-connect-btn" id="syncBtn" onclick="handleByteChatSync()">Connect ByteChat</button>
   </div>
- 
+
   <!-- 01: Live Output Feeds -->
   <section id="command-center" class="py-16">
     <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">| 01. Live Output Feeds |</h3>
@@ -240,7 +240,7 @@
       </div>
     </div>
   </section>
- 
+
   <!-- 02: TikTok Comment Photos -->
   <section id="tiktok-comments" class="py-16">
     <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">| 02. TikTok Comment Section Photos |</h3>
@@ -248,7 +248,7 @@
     <div id="tiktok-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
     <p id="tiktokCount" class="text-right text-xs mt-4 text-gray-500"></p>
   </section>
- 
+
   <!-- 03: Wallpaper Gallery -->
   <section id="wallpaper-gallery" class="py-16">
     <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">| 03. Wallpaper Gallery |</h3>
@@ -256,7 +256,7 @@
     <div id="wallpaper-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
     <p id="wallpaperCount" class="text-right text-xs mt-4 text-gray-500"></p>
   </section>
- 
+
   <!-- 04: Recommended PFPs -->
   <section id="pfp-gallery" class="py-16">
     <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-gray-700 pb-4">| 04. Recommended PFPs |</h3>
@@ -264,12 +264,12 @@
     <div id="pfp-showcase" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
     <p id="pfpCount" class="text-right text-xs mt-4 text-gray-500"></p>
   </section>
- 
+
   <!-- ★ 05: USER POSTS -->
   <section id="user-posts-section" class="py-16">
     <h3 class="text-4xl font-bold mb-4 text-center text-white border-b-2 border-gray-700 pb-4">| 05. User Posts |</h3>
     <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">Images shared by the RODSS community. Sign in and post yours.</p>
- 
+
     <!-- Upload panel — visible only when logged in -->
     <div id="uploadPostPanel" class="upload-post-panel hidden mb-8" onclick="document.getElementById('postImageInput').click()">
       <div style="font-size:2rem;margin-bottom:10px;">📸</div>
@@ -277,20 +277,20 @@
       <div style="font-size:13px;color:#6b7280;">Click to choose an image from your device</div>
       <input type="file" id="postImageInput" accept="image/*" style="display:none" onchange="handlePostUpload(event)">
     </div>
- 
+
     <!-- Login gate — visible when logged out -->
     <div id="uploadLoginGate" class="login-gate mb-8">
       <div class="login-gate-title">📸 Want to post your own image?</div>
       <div class="login-gate-sub">Sign in or create a free account to share photos with the community.</div>
       <button class="login-gate-btn" onclick="openModal('loginModal')">Sign In to Post</button>
     </div>
- 
+
     <!-- Posts grid -->
     <div id="userPostsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
       <div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;" id="noPostsMsg">No community posts yet — be the first!</div>
     </div>
   </section>
- 
+
   <!-- 06: Additional TikTok Vertical Feeds -->
   <section id="tiktok-gallery-additional" class="py-16">
     <h3 class="text-4xl font-bold mb-10 text-center text-white border-b-2 border-pink-700 pb-4">| 06. Additional TikTok Vertical Feeds |</h3>
@@ -313,17 +313,17 @@
       </div>
     </div>
   </section>
- 
+
 </main>
- 
+
 <footer class="mt-16 p-6 border-t border-gray-800 text-center text-gray-500">
   <p>&copy; <span id="currentYear"></span> RODSS Studio. Realtime Output Dual System Architecture.</p>
   <p class="text-xs mt-1 text-gray-600">Made by Bytestorm</p>
   <p class="text-xs mt-1">Design optimised for mobile and command efficiency.</p>
 </footer>
- 
+
 <div class="toast" id="toast"></div>
- 
+
 <!-- LOGIN MODAL -->
 <div class="modal-backdrop" id="loginModal" onclick="backdropClose(event,'loginModal')">
   <div class="modal">
@@ -340,7 +340,7 @@
     <p style="text-align:center;font-size:12px;color:#6b7280;margin-top:14px;">Don't have an account? <span style="color:#e5e7eb;cursor:pointer;text-decoration:underline" onclick="switchToRegister()">Create one</span></p>
   </div>
 </div>
- 
+
 <!-- REGISTER MODAL -->
 <div class="modal-backdrop" id="registerModal" onclick="backdropClose(event,'registerModal')">
   <div class="modal">
@@ -358,7 +358,7 @@
     <p style="text-align:center;font-size:12px;color:#6b7280;margin-top:14px;">Already have an account? <span style="color:#e5e7eb;cursor:pointer;text-decoration:underline" onclick="switchToLogin()">Sign in</span></p>
   </div>
 </div>
- 
+
 <!-- PHOTO EDITOR MODAL -->
 <div class="modal-backdrop" id="editorModal" onclick="backdropClose(event,'editorModal')">
   <div class="modal" style="max-width:720px;width:95vw">
@@ -409,20 +409,19 @@
     </div>
   </div>
 </div>
- 
+
 <!-- FIREBASE MODULE -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut as fbSignOut,
-         GoogleAuthProvider, OAuthProvider,
-         signInWithRedirect, getRedirectResult,
+         GoogleAuthProvider, OAuthProvider, signInWithPopup,
          createUserWithEmailAndPassword, signInWithEmailAndPassword,
          updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getDatabase, ref, set, get, push, onValue } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
- 
+
 const app = initializeApp({
   apiKey:"AIzaSyAY49sWaN-DSKV10uyBB3CeOiABLCtFrSI",
-  authDomain:"bytestorm-friebase-server.firebaseapp.com",
+  authDomain:"rodss.vercel.app",
   databaseURL:"https://bytestorm-friebase-server-default-rtdb.europe-west1.firebasedatabase.app",
   projectId:"bytestorm-friebase-server",
   storageBucket:"bytestorm-friebase-server.firebasestorage.app",
@@ -432,23 +431,34 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 const db   = getDatabase(app);
- 
+
 // ── Expose auth helpers ──
 window._fbSignOut        = () => fbSignOut(auth);
-window._fbLoginGoogle    = () => signInWithRedirect(auth, new GoogleAuthProvider());
-window._fbLoginMicrosoft = () => { const p=new OAuthProvider('microsoft.com'); p.setCustomParameters({prompt:'select_account'}); return signInWithRedirect(auth,p); };
-window._fbLoginApple     = () => { const p=new OAuthProvider('apple.com'); p.addScope('email'); p.addScope('name'); return signInWithRedirect(auth,p); };
-window._fbEmailLogin     = (e,p) => signInWithEmailAndPassword(auth,e,p);
-window._fbEmailRegister  = (e,p) => createUserWithEmailAndPassword(auth,e,p);
-window._fbUpdateProfile  = (u,d) => updateProfile(u,d);
-window._fbSetDB          = (path,val) => set(ref(db,path),val);
-window._fbGetDB          = (path) => get(ref(db,path));
-window._fbPushDB         = (path,val) => push(ref(db,path),val);
- 
-// ── Save user profile to DB (name + photoURL) ──
+window._fbLoginGoogle    = async () => {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  return signInWithPopup(auth, provider);
+};
+window._fbLoginMicrosoft = async () => {
+  const p = new OAuthProvider('microsoft.com');
+  p.setCustomParameters({ prompt:'select_account' });
+  return signInWithPopup(auth, p);
+};
+window._fbLoginApple = async () => {
+  const p = new OAuthProvider('apple.com');
+  p.addScope('email'); p.addScope('name');
+  return signInWithPopup(auth, p);
+};
+window._fbEmailLogin    = (e,p) => signInWithEmailAndPassword(auth,e,p);
+window._fbEmailRegister = (e,p) => createUserWithEmailAndPassword(auth,e,p);
+window._fbUpdateProfile = (u,d) => updateProfile(u,d);
+window._fbSetDB         = (path,val) => set(ref(db,path),val);
+window._fbGetDB         = (path) => get(ref(db,path));
+window._fbPushDB        = (path,val) => push(ref(db,path),val);
+
+// ── Save user profile to DB ──
 async function saveProfile(user) {
   const profileRef = ref(db, `users/${user.uid}/profile`);
-  // Read existing profile first so we don't overwrite a custom photo
   const snap = await get(profileRef);
   const existing = snap.exists() ? snap.val() : {};
   await set(profileRef, {
@@ -457,22 +467,10 @@ async function saveProfile(user) {
     photoURL: user.photoURL || existing.photoURL || '',
     lastSeen: Date.now()
   });
-  // Also store photoURL on window so posts can use it
   window._userPhotoURL = user.photoURL || existing.photoURL || '';
   window._userName = user.displayName || existing.name || user.email?.split('@')[0] || 'RODSS User';
 }
- 
-// ── Handle redirect result on page load ──
-getRedirectResult(auth).then(result => {
-  if (result?.user) {
-    // Redirect sign-in succeeded — onAuthStateChanged will handle the rest
-    window._showToastWhenReady = { msg: `Welcome, ${result.user.displayName || result.user.email}!`, type: 'success' };
-  }
-}).catch(err => {
-  const msg = err.message?.replace('Firebase: ', '') || 'Sign in failed.';
-  window._showToastWhenReady = { msg, type: 'error' };
-});
- 
+
 // ── Live user posts listener ──
 onValue(ref(db, 'userPosts'), snap => {
   const posts = [];
@@ -480,7 +478,7 @@ onValue(ref(db, 'userPosts'), snap => {
   if (typeof window._renderUserPosts === 'function') window._renderUserPosts(posts);
   else window._pendingPosts = posts;
 });
- 
+
 // ── Auth state ──
 onAuthStateChanged(auth, async user => {
   if (user) {
@@ -500,13 +498,13 @@ onAuthStateChanged(auth, async user => {
   }
 });
 </script>
- 
+
 <!-- MAIN JS -->
 <script>
 function toggleNav(){const n=document.getElementById('byteNav');n.style.display=n.style.display==='flex'?'none':'flex';}
 document.addEventListener('click',e=>{const w=document.getElementById('hamburgerWrap');if(!w.contains(e.target))document.getElementById('byteNav').style.display='none';});
 document.getElementById('currentYear').textContent=new Date().getFullYear();
- 
+
 function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.classList.remove('show'),3200);}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -515,7 +513,7 @@ function switchToRegister(){closeModal('loginModal');openModal('registerModal');
 function switchToLogin(){closeModal('registerModal');openModal('loginModal');}
 function toggleDropdown(){document.getElementById('userDropdown').classList.toggle('open');}
 document.addEventListener('click',e=>{const a=document.getElementById('authArea');if(a&&!a.contains(e.target))document.getElementById('userDropdown')?.classList.remove('open');});
- 
+
 // Open photo editor — only for logged-in users
 function openEditorModal(imageUrl){
   if(!window._firebaseUser){
@@ -527,7 +525,7 @@ function openEditorModal(imageUrl){
   document.getElementById('userDropdown').classList.remove('open');
   if(imageUrl) openEditorWithImage(imageUrl);
 }
- 
+
 // Gallery edit click handler — gated
 function galleryEditClick(url){
   if(!window._firebaseUser){
@@ -537,7 +535,7 @@ function galleryEditClick(url){
   }
   openEditorModal(url);
 }
- 
+
 window._renderLoggedIn=function(user){
   const name=window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User';
   const photo=window._userPhotoURL||user.photoURL||'';
@@ -561,7 +559,7 @@ window._renderLoggedIn=function(user){
     setTimeout(()=>{showToast(window._showToastWhenReady.msg,window._showToastWhenReady.type);delete window._showToastWhenReady;},300);
   }
 };
- 
+
 // Flush any auth/posts state that arrived before these functions were defined
 (function flushPending(){
   if('_pendingAuthUser' in window){
@@ -584,21 +582,28 @@ window._renderLoggedOut=function(){
   updateSyncPanel();
   renderAllGalleries(); // re-render to show lock overlays
 };
- 
+
 function updateSyncPanel(){
   const badge=document.getElementById('syncBadge'),btn=document.getElementById('syncBtn'),txt=document.getElementById('syncStatusText'),user=window._firebaseUser;
   if(!user){btn.className='sync-connect-btn';btn.textContent='Connect ByteChat';txt.textContent='Sign in to sync your RODSS account with ByteChat — share images and continue conversations.';if(badge)badge.style.display='none';return;}
   if(window._byteChatLinked){btn.className='sync-connect-btn connected';btn.textContent='✓ Synced';txt.textContent=`ByteChat is synced as ${user.email}.`;if(badge)badge.style.display='inline-flex';}
   else{btn.className='sync-connect-btn';btn.textContent='Connect ByteChat';txt.textContent='Your RODSS account is ready — click to link ByteChat.';if(badge)badge.style.display='none';}
 }
- 
+
 async function socialLogin(provider){
   try{
-    closeModal('loginModal');closeModal('registerModal');
-    showToast('Redirecting to sign in…');
     const fn={google:'_fbLoginGoogle',apple:'_fbLoginApple',microsoft:'_fbLoginMicrosoft'}[provider];
-    await window[fn](); // triggers redirect — page reloads on return
-  }catch(e){showToast(e.message?.replace('Firebase: ','')||'Sign in failed.','error');}
+    await window[fn]();
+    closeModal('loginModal');closeModal('registerModal');
+    showToast('Signed in!','success');
+  }catch(e){
+    const code=e.code||'';
+    if(code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request') return;
+    if(code==='auth/popup-blocked'){
+      showToast('Popup blocked — please allow popups for this site.','error');return;
+    }
+    showToast(e.message?.replace('Firebase: ','')||'Sign in failed.','error');
+  }
 }
 async function emailLogin(){
   const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPassword').value;
@@ -622,7 +627,7 @@ async function handleByteChatSync(){
   try{await window._fbSetDB(`users/${user.uid}/bytechatLinked`,true);window._byteChatLinked=true;updateSyncPanel();showToast('ByteChat synced!','success');}
   catch(e){showToast('Sync failed — check your Firebase rules.','error');}
 }
- 
+
 // ── GALLERY RENDER ──
 function renderGallery(photos,containerId,countId){
   const container=document.getElementById(containerId),countEl=document.getElementById(countId);
@@ -639,7 +644,7 @@ function renderGallery(photos,containerId,countId){
     </div>`).join('');
   if(countEl)countEl.textContent=`Showing ${photos.length} curated works.`;
 }
- 
+
 const ownerPhotos=[
   {url:"https://www.digitaltrends.com/wp-content/uploads/2018/05/bmw-m5-competition-f90.jpg",alt:"BMW M5 Competition"},
   {url:"https://i.pinimg.com/736x/cc/1a/1c/cc1a1c6f44b7c44a9ab1e85d66ee2adf.jpg",alt:"Abstract Digital Art"},
@@ -697,7 +702,7 @@ const recommendedPFPs=[
   {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwm7qWlYOqfeALv5BsH2qVx6DQ69sj-Z6LuA&s",alt:"Utahime PFP Alt"},
   {url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMurjpITw9H5BBS0eaAhbXFMHUZzKV8pU1xw&s",alt:"Xiaomi Mascot PFP"}
 ];
- 
+
 function renderAllGalleries(){
   renderGallery(ownerPhotos,'showcase','photoCount');
   renderGallery(tiktokCommentPhotos,'tiktok-showcase','tiktokCount');
@@ -705,13 +710,13 @@ function renderAllGalleries(){
   renderGallery(recommendedPFPs,'pfp-showcase','pfpCount');
 }
 renderAllGalleries();
- 
+
 // ── USER POSTS ──
 function timeAgo(ts){
   const diff=Date.now()-ts,m=Math.floor(diff/60000),h=Math.floor(m/60),d=Math.floor(h/24);
   if(d>0)return `${d}d ago`;if(h>0)return `${h}h ago`;if(m>0)return `${m}m ago`;return 'just now';
 }
- 
+
 window._renderUserPosts=function(posts){
   const grid=document.getElementById('userPostsGrid');
   const noMsg=document.getElementById('noPostsMsg');
@@ -745,7 +750,7 @@ window._renderUserPosts=function(posts){
       </div>`;
   }).join('');
 };
- 
+
 async function handlePostUpload(e){
   const file=e.target.files[0];
   if(!file)return;
@@ -772,7 +777,7 @@ async function handlePostUpload(e){
   };
   reader.readAsDataURL(file);
 }
- 
+
 // ── PHOTO EDITOR ──
 let editorImg=null,editorRotation=0,editorFlipH=false,editorFlipV=false;
 function openEditorWithImage(url){
