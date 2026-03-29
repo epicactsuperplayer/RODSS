@@ -423,6 +423,7 @@ import { getAuth, onAuthStateChanged, signOut as fbSignOut,
          createUserWithEmailAndPassword, signInWithEmailAndPassword,
          updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getDatabase, ref, set, get, push, onValue } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const app = initializeApp({
   apiKey:"AIzaSyAY49sWaN-DSKV10uyBB3CeOiABLCtFrSI",
@@ -436,6 +437,7 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 const db   = getDatabase(app);
+const fsdb = getFirestore(app);
 
 // Expose auth helpers
 window._fbSignOut        = () => fbSignOut(auth);
@@ -456,19 +458,34 @@ window._fbSetDB         = (path,val) => set(ref(db,path),val);
 window._fbGetDB         = (path) => get(ref(db,path));
 window._fbPushDB        = (path,val) => push(ref(db,path),val);
 
-// Save user profile to DB
+// Save user profile — reads display name from Firestore (ByteChat source of truth)
 async function saveProfile(user) {
+  // 1. Try Firestore first (ByteChat writes here)
+  let fsName = '', fsPhoto = '';
+  try {
+    const fsSnap = await getDoc(doc(fsdb, 'users', user.uid));
+    if (fsSnap.exists()) {
+      const d = fsSnap.data();
+      fsName  = d.displayName || d.name || '';
+      fsPhoto = d.photoURL || '';
+    }
+  } catch(e) { console.warn('Firestore read failed:', e); }
+
+  // 2. Fallback chain: Firestore → Firebase Auth → email prefix
+  const freshName  = fsName  || user.displayName || user.email?.split('@')[0] || 'RODSS User';
+  const freshPhoto = fsPhoto || user.photoURL || '';
+
+  // 3. Write to Realtime DB for RODSS-specific data
   const profileRef = ref(db, `users/${user.uid}/profile`);
-  const snap = await get(profileRef);
-  const existing = snap.exists() ? snap.val() : {};
   await set(profileRef, {
-    name: user.displayName || existing.name || '',
+    name: freshName,
     email: user.email || '',
-    photoURL: user.photoURL || existing.photoURL || '',
+    photoURL: freshPhoto,
     lastSeen: Date.now()
   });
-  window._userPhotoURL = user.photoURL || existing.photoURL || '';
-  window._userName = user.displayName || existing.name || user.email?.split('@')[0] || 'RODSS User';
+
+  window._userPhotoURL = freshPhoto;
+  window._userName     = freshName;
 }
 
 // Live user posts listener
