@@ -113,7 +113,7 @@
     .crop-btn{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid #374151;background:#1a1a1a;color:#6b7280;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
     .crop-btn:hover,.crop-btn.active{border-color:#9ca3af;color:#e5e7eb}
 
-    /* ── USER POSTS SECTION ── */
+    /* USER POSTS SECTION */
     .user-post-card{background:#111;border:1px solid #374151;border-radius:14px;overflow:hidden;transition:transform .3s,box-shadow .3s}
     .user-post-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(255,255,255,.08)}
     .user-post-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
@@ -166,12 +166,10 @@
   </div>
 </div>
 
-<!-- HEADER — logo centred, auth on right -->
+<!-- HEADER -->
 <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-sm shadow-md p-4 border-b border-gray-800">
   <div class="max-w-7xl mx-auto relative flex items-center justify-center">
-    <!-- centred title -->
     <h1 class="text-3xl font-extrabold tracking-widest uppercase studio-title-glow text-white">R O D S S</h1>
-    <!-- auth pinned right -->
     <div style="position:absolute;right:0;display:flex;align-items:center;gap:10px;" id="authArea">
       <div id="loggedOut" style="display:flex;gap:10px;">
         <button class="auth-btn" onclick="openModal('loginModal')">Sign In</button>
@@ -265,12 +263,11 @@
     <p id="pfpCount" class="text-right text-xs mt-4 text-gray-500"></p>
   </section>
 
-  <!-- ★ 05: USER POSTS -->
+  <!-- 05: USER POSTS -->
   <section id="user-posts-section" class="py-16">
     <h3 class="text-4xl font-bold mb-4 text-center text-white border-b-2 border-gray-700 pb-4">| 05. User Posts |</h3>
     <p class="text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">Images shared by the RODSS community. Sign in and post yours.</p>
 
-    <!-- Upload panel — visible only when logged in -->
     <div id="uploadPostPanel" class="upload-post-panel hidden mb-8" onclick="document.getElementById('postImageInput').click()">
       <div style="font-size:2rem;margin-bottom:10px;">📸</div>
       <div style="font-size:1rem;font-weight:700;color:#e5e7eb;margin-bottom:6px;">Share a Photo</div>
@@ -278,14 +275,12 @@
       <input type="file" id="postImageInput" accept="image/*" style="display:none" onchange="handlePostUpload(event)">
     </div>
 
-    <!-- Login gate — visible when logged out -->
     <div id="uploadLoginGate" class="login-gate mb-8">
       <div class="login-gate-title">📸 Want to post your own image?</div>
       <div class="login-gate-sub">Sign in or create a free account to share photos with the community.</div>
       <button class="login-gate-btn" onclick="openModal('loginModal')">Sign In to Post</button>
     </div>
 
-    <!-- Posts grid -->
     <div id="userPostsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
       <div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;" id="noPostsMsg">No community posts yet — be the first!</div>
     </div>
@@ -330,9 +325,14 @@
     <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
     <h2>Sign In</h2>
     <p class="sub">Access RODSS Studio and sync with ByteChat.</p>
-    <button class="social-btn" onclick="socialLogin('google')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>
-    <button class="social-btn" onclick="socialLogin('apple')"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>Continue with Apple</button>
-    <button class="social-btn" onclick="socialLogin('microsoft')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#00a4ef" d="M13 1h10v10H13z"/><path fill="#7fba00" d="M1 13h10v10H1z"/><path fill="#ffb900" d="M13 13h10v10H13z"/></svg>Continue with Outlook / Microsoft</button>
+    <button class="social-btn" onclick="socialLogin('google')">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <button class="social-btn" onclick="socialLogin('apple')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Continue with Apple
+    </button>
     <div class="divider">or sign in with email</div>
     <input class="form-input" type="email" id="loginEmail" placeholder="Email address">
     <input class="form-input" type="password" id="loginPassword" placeholder="Password">
@@ -347,9 +347,14 @@
     <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
     <h2>Create Account</h2>
     <p class="sub">Join RODSS Studio — free forever.</p>
-    <button class="social-btn" onclick="socialLogin('google')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Sign up with Google</button>
-    <button class="social-btn" onclick="socialLogin('apple')"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>Sign up with Apple</button>
-    <button class="social-btn" onclick="socialLogin('microsoft')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#00a4ef" d="M13 1h10v10H13z"/><path fill="#7fba00" d="M1 13h10v10H1z"/><path fill="#ffb900" d="M13 13h10v10H13z"/></svg>Sign up with Outlook / Microsoft</button>
+    <button class="social-btn" onclick="socialLogin('google')">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign up with Google
+    </button>
+    <button class="social-btn" onclick="socialLogin('apple')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Sign up with Apple
+    </button>
     <div class="divider">or register with email</div>
     <input class="form-input" type="text"     id="regName"     placeholder="Display name">
     <input class="form-input" type="email"    id="regEmail"    placeholder="Email address">
@@ -432,17 +437,12 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db   = getDatabase(app);
 
-// ── Expose auth helpers ──
+// Expose auth helpers
 window._fbSignOut        = () => fbSignOut(auth);
 window._fbLoginGoogle    = async () => {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
   return signInWithPopup(auth, provider);
-};
-window._fbLoginMicrosoft = async () => {
-  const p = new OAuthProvider('microsoft.com');
-  p.setCustomParameters({ prompt:'select_account' });
-  return signInWithPopup(auth, p);
 };
 window._fbLoginApple = async () => {
   const p = new OAuthProvider('apple.com');
@@ -456,7 +456,7 @@ window._fbSetDB         = (path,val) => set(ref(db,path),val);
 window._fbGetDB         = (path) => get(ref(db,path));
 window._fbPushDB        = (path,val) => push(ref(db,path),val);
 
-// ── Save user profile to DB ──
+// Save user profile to DB
 async function saveProfile(user) {
   const profileRef = ref(db, `users/${user.uid}/profile`);
   const snap = await get(profileRef);
@@ -471,7 +471,7 @@ async function saveProfile(user) {
   window._userName = user.displayName || existing.name || user.email?.split('@')[0] || 'RODSS User';
 }
 
-// ── Live user posts listener ──
+// Live user posts listener
 onValue(ref(db, 'userPosts'), snap => {
   const posts = [];
   if (snap.exists()) snap.forEach(child => posts.unshift({ id: child.key, ...child.val() }));
@@ -479,7 +479,7 @@ onValue(ref(db, 'userPosts'), snap => {
   else window._pendingPosts = posts;
 });
 
-// ── Auth state ──
+// Auth state
 onAuthStateChanged(auth, async user => {
   if (user) {
     await saveProfile(user);
@@ -501,6 +501,7 @@ onAuthStateChanged(auth, async user => {
 
 <!-- MAIN JS -->
 <script>
+// ── Utilities ──
 function toggleNav(){const n=document.getElementById('byteNav');n.style.display=n.style.display==='flex'?'none':'flex';}
 document.addEventListener('click',e=>{const w=document.getElementById('hamburgerWrap');if(!w.contains(e.target))document.getElementById('byteNav').style.display='none';});
 document.getElementById('currentYear').textContent=new Date().getFullYear();
@@ -514,73 +515,48 @@ function switchToLogin(){closeModal('registerModal');openModal('loginModal');}
 function toggleDropdown(){document.getElementById('userDropdown').classList.toggle('open');}
 document.addEventListener('click',e=>{const a=document.getElementById('authArea');if(a&&!a.contains(e.target))document.getElementById('userDropdown')?.classList.remove('open');});
 
-// Open photo editor — only for logged-in users
 function openEditorModal(imageUrl){
-  if(!window._firebaseUser){
-    showToast('Sign in to use the Photo Editor.','error');
-    openModal('loginModal');
-    return;
-  }
+  if(!window._firebaseUser){showToast('Sign in to use the Photo Editor.','error');openModal('loginModal');return;}
   openModal('editorModal');
   document.getElementById('userDropdown').classList.remove('open');
   if(imageUrl) openEditorWithImage(imageUrl);
 }
-
-// Gallery edit click handler — gated
 function galleryEditClick(url){
-  if(!window._firebaseUser){
-    showToast('Sign in to edit photos.','error');
-    openModal('loginModal');
-    return;
-  }
+  if(!window._firebaseUser){showToast('Sign in to edit photos.','error');openModal('loginModal');return;}
   openEditorModal(url);
 }
 
-window._renderLoggedIn=function(user){
-  const name=window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User';
-  const photo=window._userPhotoURL||user.photoURL||'';
-  document.getElementById('loggedOut').style.display='none';
-  document.getElementById('loggedIn').style.display='block';
-  // Show real profile photo if available, else initial letter
-  const avatar=document.getElementById('userAvatar');
+// ── Auth UI renderers ──
+window._renderLoggedIn = function(user){
+  // Guard: if DOM not ready, defer
+  if(!document.getElementById('loggedOut')){window._pendingAuthUser=user;return;}
+  const name = window._userName || user.displayName || user.email?.split('@')[0] || 'RODSS User';
+  const photo = window._userPhotoURL || user.photoURL || '';
+  document.getElementById('loggedOut').style.display = 'none';
+  document.getElementById('loggedIn').style.display  = 'block';
+  const avatar = document.getElementById('userAvatar');
   if(photo){
     avatar.innerHTML=`<img src="${photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='${name.slice(0,1).toUpperCase()}'">`;
   } else {
-    avatar.textContent=name.slice(0,1).toUpperCase();
+    avatar.textContent = name.slice(0,1).toUpperCase();
   }
-  document.getElementById('dropdownName').textContent=name;
-  document.getElementById('dropdownEmail').textContent=user.email||'';
+  document.getElementById('dropdownName').textContent  = name;
+  document.getElementById('dropdownEmail').textContent = user.email || '';
   document.getElementById('uploadPostPanel').classList.remove('hidden');
-  document.getElementById('uploadLoginGate').style.display='none';
+  document.getElementById('uploadLoginGate').style.display = 'none';
   updateSyncPanel();
   renderAllGalleries();
-  // Show any pending toast from redirect result
-  if(window._showToastWhenReady){
-    setTimeout(()=>{showToast(window._showToastWhenReady.msg,window._showToastWhenReady.type);delete window._showToastWhenReady;},300);
-  }
 };
 
-// Flush any auth/posts state that arrived before these functions were defined
-(function flushPending(){
-  if('_pendingAuthUser' in window){
-    const u=window._pendingAuthUser;
-    delete window._pendingAuthUser;
-    if(u) window._renderLoggedIn(u); else window._renderLoggedOut();
-  }
-  if(window._pendingPosts){
-    window._renderUserPosts(window._pendingPosts);
-    delete window._pendingPosts;
-  }
-})();
-window._renderLoggedOut=function(){
-  document.getElementById('loggedOut').style.display='flex';
-  document.getElementById('loggedIn').style.display='none';
+window._renderLoggedOut = function(){
+  if(!document.getElementById('loggedOut')){window._pendingAuthUser=null;return;}
+  document.getElementById('loggedOut').style.display = 'flex';
+  document.getElementById('loggedIn').style.display  = 'none';
   document.getElementById('userDropdown').classList.remove('open');
-  // hide upload panel, show login gate
   document.getElementById('uploadPostPanel').classList.add('hidden');
-  document.getElementById('uploadLoginGate').style.display='';
+  document.getElementById('uploadLoginGate').style.display = '';
   updateSyncPanel();
-  renderAllGalleries(); // re-render to show lock overlays
+  renderAllGalleries();
 };
 
 function updateSyncPanel(){
@@ -590,18 +566,17 @@ function updateSyncPanel(){
   else{btn.className='sync-connect-btn';btn.textContent='Connect ByteChat';txt.textContent='Your RODSS account is ready — click to link ByteChat.';if(badge)badge.style.display='none';}
 }
 
+// ── Social & email auth ──
 async function socialLogin(provider){
   try{
-    const fn={google:'_fbLoginGoogle',apple:'_fbLoginApple',microsoft:'_fbLoginMicrosoft'}[provider];
+    const fn={google:'_fbLoginGoogle',apple:'_fbLoginApple'}[provider];
     await window[fn]();
     closeModal('loginModal');closeModal('registerModal');
     showToast('Signed in!','success');
   }catch(e){
     const code=e.code||'';
     if(code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request') return;
-    if(code==='auth/popup-blocked'){
-      showToast('Popup blocked — please allow popups for this site.','error');return;
-    }
+    if(code==='auth/popup-blocked'){showToast('Popup blocked — please allow popups for this site.','error');return;}
     showToast(e.message?.replace('Firebase: ','')||'Sign in failed.','error');
   }
 }
@@ -628,7 +603,7 @@ async function handleByteChatSync(){
   catch(e){showToast('Sync failed — check your Firebase rules.','error');}
 }
 
-// ── GALLERY RENDER ──
+// ── Gallery render ──
 function renderGallery(photos,containerId,countId){
   const container=document.getElementById(containerId),countEl=document.getElementById(countId);
   if(!container)return;
@@ -642,7 +617,7 @@ function renderGallery(photos,containerId,countId){
         : `<div class="edit-overlay-locked"><span class="lock-icon">🔒</span><span class="lock-label">Sign in to edit</span></div>`
       }
     </div>`).join('');
-  if(countEl)countEl.textContent=`Showing ${photos.length} curated works.`;
+  if(countEl) countEl.textContent=`Showing ${photos.length} curated works.`;
 }
 
 const ownerPhotos=[
@@ -711,26 +686,24 @@ function renderAllGalleries(){
 }
 renderAllGalleries();
 
-// ── USER POSTS ──
+// ── User Posts ──
 function timeAgo(ts){
   const diff=Date.now()-ts,m=Math.floor(diff/60000),h=Math.floor(m/60),d=Math.floor(h/24);
   if(d>0)return `${d}d ago`;if(h>0)return `${h}h ago`;if(m>0)return `${m}m ago`;return 'just now';
 }
-
 window._renderUserPosts=function(posts){
   const grid=document.getElementById('userPostsGrid');
-  const noMsg=document.getElementById('noPostsMsg');
   if(!posts||!posts.length){
-    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;" id="noPostsMsg">No community posts yet — be the first!</div>`;
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;">No community posts yet — be the first!</div>`;
     return;
   }
   const loggedIn=!!window._firebaseUser;
   grid.innerHTML=posts.map(p=>{
     const initial=(p.userName||'?').slice(0,1).toUpperCase();
     const avatarHtml=p.userPhoto
-      ? `<img src="${p.userPhoto}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='<div class=\"user-post-avatar\">${initial}</div>'">`
+      ? `<img src="${p.userPhoto}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='<div class=\\'user-post-avatar\\'>${initial}</div>'">`
       : `<div class="user-post-avatar">${initial}</div>`;
-    const safeUrl=p.imageUrl.replace(/'/g,"\'");
+    const safeUrl=p.imageUrl.replace(/'/g,"\\'");
     const editBtn=loggedIn
       ? `<button class="user-post-edit-btn" onclick="galleryEditClick('${safeUrl}')">Edit</button>`
       : `<button class="user-post-edit-btn" onclick="openModal('loginModal')" title="Sign in to edit">🔒</button>`;
@@ -756,11 +729,9 @@ async function handlePostUpload(e){
   if(!file)return;
   const user=window._firebaseUser;
   if(!user){showToast('Sign in to post images.','error');return;}
-  // Convert to base64 data URL (no external storage needed)
   const reader=new FileReader();
   reader.onload=async ev=>{
     const dataUrl=ev.target.result;
-    // Warn if too large for Realtime DB (limit ~1MB per value)
     if(dataUrl.length>900000){showToast('Image too large. Please use a smaller file (< ~600KB).','error');return;}
     showToast('Uploading post…');
     try{
@@ -778,7 +749,7 @@ async function handlePostUpload(e){
   reader.readAsDataURL(file);
 }
 
-// ── PHOTO EDITOR ──
+// ── Photo Editor ──
 let editorImg=null,editorRotation=0,editorFlipH=false,editorFlipV=false;
 function openEditorWithImage(url){
   const img=new Image();img.crossOrigin='anonymous';
@@ -835,6 +806,19 @@ function downloadEdited(){
   const link=document.createElement('a');link.download='rodss-edit.png';link.href=out.toDataURL('image/png');link.click();
   showToast('Image downloaded!','success');
 }
+
+// ── Flush pending auth/posts — MUST be last ──
+(function flushPending(){
+  if('_pendingAuthUser' in window){
+    const u=window._pendingAuthUser;
+    delete window._pendingAuthUser;
+    if(u) window._renderLoggedIn(u); else window._renderLoggedOut();
+  }
+  if(window._pendingPosts){
+    window._renderUserPosts(window._pendingPosts);
+    delete window._pendingPosts;
+  }
+})();
 </script>
 </body>
 </html>
