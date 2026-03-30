@@ -157,10 +157,12 @@
     /* Clickable avatar on posts */
     .post-avatar-wrap{cursor:pointer;flex-shrink:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
     .post-avatar-wrap:hover{opacity:.75}
-    #userPostsGrid{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:1.5rem!important;}
-    @media(min-width:640px){#userPostsGrid{grid-template-columns:repeat(3,1fr)!important}}
-    @media(min-width:1024px){#userPostsGrid{grid-template-columns:repeat(4,1fr)!important}}
-    @media(min-width:1280px){#userPostsGrid{grid-template-columns:repeat(5,1fr)!important}}
+
+    /* ── FIXED: User posts grid — no !important, clean responsive columns ── */
+    #userPostsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;width:100%;}
+    @media(min-width:640px){#userPostsGrid{grid-template-columns:repeat(3,1fr)}}
+    @media(min-width:1024px){#userPostsGrid{grid-template-columns:repeat(4,1fr)}}
+    @media(min-width:1280px){#userPostsGrid{grid-template-columns:repeat(5,1fr)}}
   </style>
 </head>
 <body class="min-h-screen">
@@ -503,7 +505,6 @@ window._fbUpdateDB      = (updates) => update(ref(db),updates);
 window._fsGetDoc        = (col,id) => getDoc(doc(fsdb,col,id));
 window._fsSetDoc        = (col,id,data) => setDoc(doc(fsdb,col,id),data,{merge:true});
 
-// Save profile — reads ByteChat Firestore as source of truth
 async function saveProfile(user) {
   let fsName='', fsPfp='', fsAbout='';
   try {
@@ -549,12 +550,11 @@ async function syncUserPostsMeta(uid, name, photo) {
   } catch(e){ console.warn('Post meta sync failed:',e); }
 }
 
-// Live posts
+// Live posts listener — always calls _renderUserPosts directly, no pending buffer needed
 onValue(ref(db,'userPosts'), snap => {
   const posts=[];
   if(snap.exists()) snap.forEach(child => posts.unshift({id:child.key,...child.val()}));
-  if(typeof window._renderUserPosts==='function') window._renderUserPosts(posts);
-  else window._pendingPosts=posts;
+  window._renderUserPosts(posts);
 });
 
 // Auth state
@@ -564,19 +564,18 @@ onAuthStateChanged(auth, async user => {
     const snap = await get(ref(db,`users/${user.uid}/bytechatLinked`));
     window._byteChatLinked = snap.exists() ? snap.val() : false;
     window._firebaseUser   = user;
-    if(typeof window._renderLoggedIn==='function') window._renderLoggedIn(user);
-    else window._pendingAuthUser=user;
+    window._renderLoggedIn(user);
   } else {
     window._firebaseUser=null; window._byteChatLinked=false;
     window._userPhotoURL=''; window._userName=''; window._userBio=''; window._userUsername='';
-    if(typeof window._renderLoggedOut==='function') window._renderLoggedOut();
-    else window._pendingAuthUser=null;
+    window._renderLoggedOut();
   }
 });
 </script>
 
 <!-- MAIN JS -->
 <script>
+// ── Utility ──
 function toggleNav(){const n=document.getElementById('byteNav');n.style.display=n.style.display==='flex'?'none':'flex';}
 document.addEventListener('click',e=>{const w=document.getElementById('hamburgerWrap');if(!w.contains(e.target))document.getElementById('byteNav').style.display='none';});
 document.getElementById('currentYear').textContent=new Date().getFullYear();
@@ -589,6 +588,72 @@ function switchToRegister(){closeModal('loginModal');openModal('registerModal');
 function switchToLogin(){closeModal('registerModal');openModal('loginModal');}
 function toggleDropdown(){document.getElementById('userDropdown').classList.toggle('open');}
 document.addEventListener('click',e=>{const a=document.getElementById('authArea');if(a&&!a.contains(e.target))document.getElementById('userDropdown')?.classList.remove('open');});
+
+// ── User Posts render — defined first so Firebase onValue always finds it ──
+window._renderUserPosts=function(posts){
+  const grid=document.getElementById('userPostsGrid');
+  if(!grid) return;
+  if(!posts||!posts.length){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;">No community posts yet — be the first!</div>`;
+    return;
+  }
+  const loggedIn   = !!window._firebaseUser;
+  const currentUid = window._firebaseUser?.uid||'';
+  const isAdmin    = window._firebaseUser?.email === ADMIN_EMAIL;
+
+  grid.innerHTML=posts.map(p=>{
+    const initial    = (p.userName||'?').slice(0,1).toUpperCase();
+    const safeUrl    = (p.imageUrl||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeName   = (p.userName||'Anonymous').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safePhoto  = (p.userPhoto||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeEmail  = (p.userEmail||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeUid    = (p.userId||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeId     = (p.id||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+
+    const avatarInner = p.userPhoto
+      ? `<img src="${p.userPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.outerHTML='<span style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;\'>${initial}</span>'">`
+      : `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;">${initial}</span>`;
+
+    const canDelete = isAdmin || (loggedIn && p.userId === currentUid);
+
+    const editBtn = loggedIn
+      ? `<button class="user-post-edit-btn" onclick="galleryEditClick('${safeUrl}')">Edit</button>`
+      : `<button class="user-post-edit-btn" onclick="openModal('loginModal')" title="Sign in to edit">🔒</button>`;
+
+    const deleteBtn = canDelete
+      ? `<button class="user-post-delete-btn" onclick="deletePost('${safeId}',event)" title="Delete post">🗑</button>`
+      : '';
+
+    return `<div class="user-post-card" id="post-${p.id}"><img class="post-img" src="${p.imageUrl}" alt="Post by ${p.userName||'Anonymous'}" loading="lazy" onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'" style="cursor:pointer" onclick="galleryEditClick('${safeUrl}')"><div class="user-post-meta"><div class="post-avatar-wrap user-post-avatar" onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')" title="View ${p.userName||'profile'}">${avatarInner}</div><div class="user-post-info"><div class="user-post-name" style="cursor:pointer" onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')">${p.userName||'Anonymous'}</div><div class="user-post-time">${timeAgo(p.timestamp)}</div></div><div style="display:flex;gap:4px;flex-shrink:0">${editBtn}${deleteBtn}</div></div></div>`;
+  }).join('');
+};
+
+// ── Auth UI render — also defined early ──
+window._renderLoggedIn=function(user){
+  const name  = window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User';
+  const photo = window._userPhotoURL||user.photoURL||'';
+  document.getElementById('loggedOut').style.display='none';
+  document.getElementById('loggedIn').style.display='block';
+  const avatar=document.getElementById('userAvatar');
+  if(photo){
+    avatar.innerHTML=`<img src="${photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='${name.slice(0,1).toUpperCase()}'">`;
+  } else { avatar.textContent=name.slice(0,1).toUpperCase(); }
+  document.getElementById('dropdownName').textContent  = name;
+  document.getElementById('dropdownEmail').textContent = user.email||'';
+  document.getElementById('uploadPostPanel').classList.remove('hidden');
+  document.getElementById('uploadLoginGate').style.display='none';
+  updateSyncPanel();
+  renderAllGalleries();
+};
+window._renderLoggedOut=function(){
+  document.getElementById('loggedOut').style.display='flex';
+  document.getElementById('loggedIn').style.display='none';
+  document.getElementById('userDropdown').classList.remove('open');
+  document.getElementById('uploadPostPanel').classList.add('hidden');
+  document.getElementById('uploadLoginGate').style.display='';
+  updateSyncPanel();
+  renderAllGalleries();
+};
 
 // ── Photo editor ──
 function openEditorModal(imageUrl){
@@ -676,35 +741,7 @@ async function openProfileModal(userId, userName, userPhoto, userEmail){
   } catch(e){ document.getElementById('pmBio').textContent='Could not load profile.'; }
 }
 
-// ── Auth UI ──
-window._renderLoggedIn=function(user){
-  if(!document.getElementById('loggedOut')){window._pendingAuthUser=user;return;}
-  const name  = window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User';
-  const photo = window._userPhotoURL||user.photoURL||'';
-  document.getElementById('loggedOut').style.display='none';
-  document.getElementById('loggedIn').style.display='block';
-  const avatar=document.getElementById('userAvatar');
-  if(photo){
-    avatar.innerHTML=`<img src="${photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='${name.slice(0,1).toUpperCase()}'">`;
-  } else { avatar.textContent=name.slice(0,1).toUpperCase(); }
-  document.getElementById('dropdownName').textContent  = name;
-  document.getElementById('dropdownEmail').textContent = user.email||'';
-  document.getElementById('uploadPostPanel').classList.remove('hidden');
-  document.getElementById('uploadLoginGate').style.display='none';
-  updateSyncPanel();
-  renderAllGalleries();
-};
-window._renderLoggedOut=function(){
-  if(!document.getElementById('loggedOut')){window._pendingAuthUser=null;return;}
-  document.getElementById('loggedOut').style.display='flex';
-  document.getElementById('loggedIn').style.display='none';
-  document.getElementById('userDropdown').classList.remove('open');
-  document.getElementById('uploadPostPanel').classList.add('hidden');
-  document.getElementById('uploadLoginGate').style.display='';
-  updateSyncPanel();
-  renderAllGalleries();
-};
-
+// ── Sync panel ──
 function updateSyncPanel(){
   const badge=document.getElementById('syncBadge'),btn=document.getElementById('syncBtn'),txt=document.getElementById('syncStatusText'),user=window._firebaseUser;
   if(!user){btn.className='sync-connect-btn';btn.textContent='Connect ByteChat';txt.textContent='Sign in to sync your RODSS account with ByteChat.';if(badge)badge.style.display='none';return;}
@@ -712,6 +749,7 @@ function updateSyncPanel(){
   else{btn.className='sync-connect-btn';btn.textContent='Connect ByteChat';txt.textContent='Your RODSS account is ready — click to link ByteChat.';if(badge)badge.style.display='none';}
 }
 
+// ── Auth actions ──
 async function socialLogin(provider){
   try{
     const fn={google:'_fbLoginGoogle',apple:'_fbLoginApple'}[provider];
@@ -830,51 +868,12 @@ function renderAllGalleries(){
 }
 renderAllGalleries();
 
-// ── User Posts ──
+// ── Helpers ──
 function timeAgo(ts){
   const diff=Date.now()-ts,m=Math.floor(diff/60000),h=Math.floor(m/60),d=Math.floor(h/24);
   if(d>0)return `${d}d ago`;if(h>0)return `${h}h ago`;if(m>0)return `${m}m ago`;return 'just now';
 }
-
 const ADMIN_EMAIL = 'bytestorm.corp@gmail.com';
-
-// ── FIX: removed cssText overwrite — CSS handles the responsive grid layout ──
-window._renderUserPosts=function(posts){
-  const grid=document.getElementById('userPostsGrid');
-  if(!posts||!posts.length){
-    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;">No community posts yet — be the first!</div>`;
-    return;
-  }
-  const loggedIn   = !!window._firebaseUser;
-  const currentUid = window._firebaseUser?.uid||'';
-  const isAdmin    = window._firebaseUser?.email === ADMIN_EMAIL;
-
-  grid.innerHTML=posts.map(p=>{
-    const initial    = (p.userName||'?').slice(0,1).toUpperCase();
-    const safeUrl    = (p.imageUrl||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeName   = (p.userName||'Anonymous').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safePhoto  = (p.userPhoto||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeEmail  = (p.userEmail||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeUid    = (p.userId||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeId     = (p.id||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-
-    const avatarInner = p.userPhoto
-      ? `<img src="${p.userPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.outerHTML='<span style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;\'>${initial}</span>'">`
-      : `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;">${initial}</span>`;
-
-    const canDelete = isAdmin || (loggedIn && p.userId === currentUid);
-
-    const editBtn = loggedIn
-      ? `<button class="user-post-edit-btn" onclick="galleryEditClick('${safeUrl}')">Edit</button>`
-      : `<button class="user-post-edit-btn" onclick="openModal('loginModal')" title="Sign in to edit">🔒</button>`;
-
-    const deleteBtn = canDelete
-      ? `<button class="user-post-delete-btn" onclick="deletePost('${safeId}',event)" title="Delete post">🗑</button>`
-      : '';
-
-    return `<div class="user-post-card" id="post-${p.id}"><img class="post-img" src="${p.imageUrl}" alt="Post by ${p.userName||'Anonymous'}" loading="lazy" onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'" style="cursor:pointer" onclick="galleryEditClick('${safeUrl}')"><div class="user-post-meta"><div class="post-avatar-wrap user-post-avatar" onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')" title="View ${p.userName||'profile'}">${avatarInner}</div><div class="user-post-info"><div class="user-post-name" style="cursor:pointer" onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')">${p.userName||'Anonymous'}</div><div class="user-post-time">${timeAgo(p.timestamp)}</div></div><div style="display:flex;gap:4px;flex-shrink:0">${editBtn}${deleteBtn}</div></div></div>`;
-  }).join('');
-};
 
 async function deletePost(postId, evt){
   evt.stopPropagation();
@@ -908,8 +907,8 @@ async function handlePostUpload(e){
     try{ cld=JSON.parse(text); }
     catch(je){ throw new Error('Cloudinary response was not JSON. Status: '+res.status); }
 
-    if(cld.error){ throw new Error('Cloudinary error: '+cld.error.message+'. Make sure BYTEPIC preset is set to UNSIGNED in Cloudinary dashboard.'); }
-    if(!cld.secure_url){ throw new Error('Cloudinary gave no URL. Response: '+text.slice(0,200)); }
+    if(cld.error){ throw new Error('Cloudinary error: '+cld.error.message); }
+    if(!cld.secure_url){ throw new Error('Cloudinary gave no URL.'); }
 
     const imageUrl=cld.secure_url;
     showToast('Saving post…');
@@ -930,7 +929,8 @@ async function handlePostUpload(e){
     document.getElementById('postImageInput').value='';
   } catch(err){
     URL.revokeObjectURL(localUrl);
-    console.error('Upload error full:', err);
+    document.getElementById('postImageInput').value='';
+    console.error('Upload error:', err);
     showToast(err.message,'error');
   }
 }
@@ -992,15 +992,6 @@ function downloadEdited(){
   const link=document.createElement('a');link.download='rodss-edit.png';link.href=out.toDataURL('image/png');link.click();
   showToast('Image downloaded!','success');
 }
-
-// ── Flush pending — MUST be last ──
-(function flushPending(){
-  if('_pendingAuthUser' in window){
-    const u=window._pendingAuthUser; delete window._pendingAuthUser;
-    if(u) window._renderLoggedIn(u); else window._renderLoggedOut();
-  }
-  if(window._pendingPosts){window._renderUserPosts(window._pendingPosts);delete window._pendingPosts;}
-})();
 </script>
 </body>
 </html>
