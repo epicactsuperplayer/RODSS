@@ -157,10 +157,10 @@
     /* Clickable avatar on posts */
     .post-avatar-wrap{cursor:pointer;flex-shrink:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
     .post-avatar-wrap:hover{opacity:.75}
-    #userPostsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;}
-    @media(min-width:640px){#userPostsGrid{grid-template-columns:repeat(3,1fr)}}
-    @media(min-width:1024px){#userPostsGrid{grid-template-columns:repeat(4,1fr)}}
-    @media(min-width:1280px){#userPostsGrid{grid-template-columns:repeat(5,1fr)}}
+    #userPostsGrid{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:1.5rem!important;}
+    @media(min-width:640px){#userPostsGrid{grid-template-columns:repeat(3,1fr)!important}}
+    @media(min-width:1024px){#userPostsGrid{grid-template-columns:repeat(4,1fr)!important}}
+    @media(min-width:1280px){#userPostsGrid{grid-template-columns:repeat(5,1fr)!important}}
   </style>
 </head>
 <body class="min-h-screen">
@@ -290,7 +290,7 @@
       <div class="login-gate-sub">Sign in or create a free account to share photos with the community.</div>
       <button class="login-gate-btn" onclick="openModal('loginModal')">Sign In to Post</button>
     </div>
-    <div id="userPostsGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;">
+    <div id="userPostsGrid">
       <div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;">No community posts yet — be the first!</div>
     </div>
   </section>
@@ -505,29 +505,27 @@ window._fsSetDoc        = (col,id,data) => setDoc(doc(fsdb,col,id),data,{merge:t
 
 // Save profile — reads ByteChat Firestore as source of truth
 async function saveProfile(user) {
-  let fsName='', fsPhoto='', fsBio='', fsUsername='';
+  // ByteChat uses: name, pfp, about, email in Firestore users/{uid}
+  let fsName='', fsPfp='', fsAbout='';
   try {
     const fsSnap = await getDoc(doc(fsdb, 'users', user.uid));
     if(fsSnap.exists()){
       const d = fsSnap.data();
-      // Read every possible field ByteChat might use
-      fsName     = d.displayName || d.name || '';
-      fsPhoto    = d.photoURL    || d.photo || '';
-      fsBio      = d.bio         || d.description || d.about || '';
-      // Username: prefer stored username, fall back to Gmail address
-      fsUsername = d.username    || d.handle || user.email || '';
+      fsName  = d.name  || '';
+      fsPfp   = d.pfp   || '';
+      fsAbout = d.about || '';
     }
   } catch(e){ console.warn('Firestore read failed:', e); }
 
-  const freshName     = fsName     || user.displayName || user.email?.split('@')[0] || 'RODSS User';
-  const freshPhoto    = fsPhoto    || user.photoURL    || '';
-  const freshBio      = fsBio;
-  // Username always falls back to the user's Gmail if nothing else is set
-  const freshUsername = fsUsername || user.email || '';
+  const freshName  = fsName  || user.displayName || user.email?.split('@')[0] || 'RODSS User';
+  const freshPhoto = fsPfp   || user.photoURL || '';
+  const freshBio   = fsAbout;
+  // Username is always the Gmail address (ByteChat uses email as identifier)
+  const freshUsername = user.email || '';
 
   await set(ref(db, `users/${user.uid}/profile`), {
-    name: freshName, email: user.email || '', photoURL: freshPhoto,
-    bio: freshBio, username: freshUsername, lastSeen: Date.now()
+    name: freshName, email: user.email||'', pfp: freshPhoto,
+    about: freshBio, username: freshUsername, lastSeen: Date.now()
   });
 
   window._userPhotoURL  = freshPhoto;
@@ -535,7 +533,6 @@ async function saveProfile(user) {
   window._userBio       = freshBio;
   window._userUsername  = freshUsername;
 
-  // Sync name/photo on all this user's existing posts
   syncUserPostsMeta(user.uid, freshName, freshPhoto);
 }
 
@@ -630,16 +627,15 @@ async function saveSettings(){
   try{
     // Write to Realtime DB (RODSS)
     await window._fbSetDB(`users/${user.uid}/profile`,{
-      name, bio, username, email:user.email||'',
-      photoURL:window._userPhotoURL||'', lastSeen:Date.now()
+      name, about:bio, username, email:user.email||'',
+      pfp:window._userPhotoURL||'', lastSeen:Date.now()
     });
-    // Write to Firestore (ByteChat sync) — mirror all fields ByteChat reads
+    // Write to Firestore using ByteChat's exact field names: name, pfp, about
     await window._fsSetDoc('users', user.uid, {
-      displayName: name,
-      bio:         bio,
-      username:    username,
-      // keep email in Firestore too so ByteChat can read it
-      email:       user.email||''
+      name:  name,
+      about: bio,
+      email: user.email||''
+      // pfp is managed by Cloudinary upload, not changed here
     });
     window._userName     = name;
     window._userBio      = bio;
