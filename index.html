@@ -903,36 +903,50 @@ async function handlePostUpload(e){
   const file=e.target.files[0]; if(!file) return;
   const user=window._firebaseUser;
   if(!user){showToast('Sign in to post images.','error');return;}
-  // Validate file type
   if(!file.type.startsWith('image/')){showToast('Please select an image file.','error');return;}
-  showToast('Uploading to Cloudinary…');
+
+  // Show preview immediately so user knows something is happening
+  const localUrl=URL.createObjectURL(file);
+  showToast('Uploading…');
+
   try{
+    // Step 1: Upload to Cloudinary
     const formData=new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'BYTEPIC');
-    formData.append('cloud_name', 'detawwram');
-    const res=await fetch('https://api.cloudinary.com/v1_1/detawwram/image/upload',{
-      method:'POST', body:formData
-    });
-    const cld=await res.json();
-    // Always check for Cloudinary error field first (it can return 200 with an error body)
-    if(cld.error) throw new Error('Cloudinary: '+cld.error.message);
-    if(!cld.secure_url) throw new Error('Cloudinary returned no URL. Check your upload preset is set to Unsigned.');
+    // Do NOT append cloud_name to body — it causes issues with some presets
+    const res=await fetch('https://api.cloudinary.com/v1_1/detawwram/image/upload',{method:'POST',body:formData});
+    const text=await res.text(); // read as text first to avoid JSON parse crash
+    let cld;
+    try{ cld=JSON.parse(text); }
+    catch(je){ throw new Error('Cloudinary response was not JSON. Status: '+res.status); }
+
+    if(cld.error){ throw new Error('Cloudinary error: '+cld.error.message+'. Make sure BYTEPIC preset is set to UNSIGNED in Cloudinary dashboard.'); }
+    if(!cld.secure_url){ throw new Error('Cloudinary gave no URL. Response: '+text.slice(0,200)); }
+
     const imageUrl=cld.secure_url;
-    showToast('Image uploaded, saving post…');
-    await window._fbPushDB('userPosts',{
+    showToast('Saving post…');
+
+    // Step 2: Push unique entry to Firebase Realtime DB
+    const postData={
       imageUrl,
       userName:window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User',
-      userPhoto:window._userPhotoURL||user.photoURL||'',
+      userPhoto:window._userPhotoURL||'',
       userEmail:user.email||'',
       userId:user.uid,
       timestamp:Date.now()
-    });
+    };
+    const pushResult=await window._fbPushDB('userPosts', postData);
+    console.log('Post saved with key:', pushResult?.key);
+
+    URL.revokeObjectURL(localUrl);
     showToast('Post shared!','success');
     document.getElementById('postImageInput').value='';
   } catch(err){
-    console.error('Upload error:', err);
-    showToast('Upload failed: '+err.message,'error');
+    URL.revokeObjectURL(localUrl);
+    console.error('Upload error full:', err);
+    // Show the actual error so you can debug
+    showToast(err.message,'error');
   }
 }
 
