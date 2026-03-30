@@ -132,7 +132,6 @@
     .login-gate-btn{background:#fff;color:#000;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:10px 24px;border-radius:8px;cursor:pointer;transition:opacity .2s}
     .login-gate-btn:hover{opacity:.85}
 
-    /* Profile modal */
     .profile-modal-avatar{width:80px;height:80px;border-radius:50%;background:#fff;color:#000;font-weight:700;font-size:2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:3px solid #374151;overflow:hidden;flex-shrink:0}
     .profile-modal-avatar img{width:100%;height:100%;object-fit:cover}
     .profile-modal-name{font-size:1.3rem;font-weight:800;color:#fff;text-align:center;margin-bottom:4px}
@@ -141,7 +140,6 @@
     .profile-modal-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #1f2937;font-size:13px;color:#e5e7eb}
     .profile-modal-row .prow-label{color:#6b7280;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;min-width:74px}
 
-    /* Settings modal */
     .settings-section{margin-bottom:24px}
     .settings-section-title{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1f2937}
     .settings-row{padding:10px 0;border-bottom:1px solid #1a1a1a}
@@ -154,11 +152,9 @@
     .settings-danger-btn{background:transparent;color:#f87171;border:1px solid rgba(248,113,113,.4);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:10px 20px;border-radius:8px;cursor:pointer;transition:all .2s;margin-top:8px;width:100%}
     .settings-danger-btn:hover{background:rgba(248,113,113,.1)}
 
-    /* Clickable avatar on posts */
     .post-avatar-wrap{cursor:pointer;flex-shrink:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
     .post-avatar-wrap:hover{opacity:.75}
 
-    /* ── FIXED: User posts grid — no !important, clean responsive columns ── */
     #userPostsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;width:100%;}
     @media(min-width:640px){#userPostsGrid{grid-template-columns:repeat(3,1fr)}}
     @media(min-width:1024px){#userPostsGrid{grid-template-columns:repeat(4,1fr)}}
@@ -468,15 +464,27 @@
   </div>
 </div>
 
-<!-- FIREBASE MODULE -->
+<!-- ═══════════════════════════════════════════════════════
+     FIREBASE MODULE  —  all userPosts now use Firestore
+     Realtime Database is kept only for:
+       • users/{uid}/profile
+       • users/{uid}/bytechatLinked
+     ═══════════════════════════════════════════════════════ -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut as fbSignOut,
          GoogleAuthProvider, OAuthProvider, signInWithPopup,
          createUserWithEmailAndPassword, signInWithEmailAndPassword,
          updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getDatabase, ref, set, get, push, onValue, update } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+import {
+  getFirestore,
+  collection, doc,
+  addDoc, getDoc, setDoc, deleteDoc,
+  query, orderBy, onSnapshot,
+  writeBatch, getDocs, where,
+  serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const app = initializeApp({
   apiKey:"AIzaSyAY49sWaN-DSKV10uyBB3CeOiABLCtFrSI",
@@ -488,41 +496,69 @@ const app = initializeApp({
   appId:"1:400056781433:web:aab98f18df3f6b7c7f62a8",
   measurementId:"G-9LWS8222EL"
 });
-const auth = getAuth(app);
-const db   = getDatabase(app);
-const fsdb = getFirestore(app);
 
+const auth  = getAuth(app);
+const rtdb  = getDatabase(app);
+const fsdb  = getFirestore(app);
+
+// ── Expose RTDB helpers (profile + bytechatLinked only) ──
 window._fbSignOut       = () => fbSignOut(auth);
 window._fbLoginGoogle   = async () => { const p=new GoogleAuthProvider(); p.setCustomParameters({prompt:'select_account'}); return signInWithPopup(auth,p); };
 window._fbLoginApple    = async () => { const p=new OAuthProvider('apple.com'); p.addScope('email'); p.addScope('name'); return signInWithPopup(auth,p); };
 window._fbEmailLogin    = (e,p) => signInWithEmailAndPassword(auth,e,p);
 window._fbEmailRegister = (e,p) => createUserWithEmailAndPassword(auth,e,p);
 window._fbUpdateProfile = (u,d) => updateProfile(u,d);
-window._fbSetDB         = (path,val) => set(ref(db,path),val);
-window._fbGetDB         = (path) => get(ref(db,path));
-window._fbPushDB        = (path,val) => push(ref(db,path),val);
-window._fbUpdateDB      = (updates) => update(ref(db),updates);
-window._fsGetDoc        = (col,id) => getDoc(doc(fsdb,col,id));
-window._fsSetDoc        = (col,id,data) => setDoc(doc(fsdb,col,id),data,{merge:true});
+window._fbSetDB         = (path,val) => set(ref(rtdb,path),val);
+window._fbGetDB         = (path) => get(ref(rtdb,path));
 
+// ── Expose Firestore helpers ──
+window._fsGetDoc  = (col,id) => getDoc(doc(fsdb,col,id));
+window._fsSetDoc  = (col,id,data) => setDoc(doc(fsdb,col,id),data,{merge:true});
+
+// ── Firestore: add a user post ──
+window._fsAddPost = async (postData) => {
+  return addDoc(collection(fsdb,'userPosts'), {
+    ...postData,
+    timestamp: serverTimestamp()   // server-side timestamp for reliable ordering
+  });
+};
+
+// ── Firestore: delete a user post ──
+window._fsDeletePost = (postId) => deleteDoc(doc(fsdb,'userPosts',postId));
+
+// ── Firestore: batch-update userName + userPhoto on all posts by this user ──
+window._fsSyncPostsMeta = async (uid, name, photo) => {
+  try {
+    const q    = query(collection(fsdb,'userPosts'), where('userId','==',uid));
+    const snap = await getDocs(q);
+    if(snap.empty) return;
+    const batch = writeBatch(fsdb);
+    snap.forEach(d => {
+      batch.update(doc(fsdb,'userPosts',d.id), { userName: name, userPhoto: photo });
+    });
+    await batch.commit();
+  } catch(e){ console.warn('Post meta sync failed:',e); }
+};
+
+// ── Save profile to RTDB (unchanged) + pull Firestore profile data ──
 async function saveProfile(user) {
   let fsName='', fsPfp='', fsAbout='';
   try {
-    const fsSnap = await getDoc(doc(fsdb, 'users', user.uid));
+    const fsSnap = await getDoc(doc(fsdb,'users',user.uid));
     if(fsSnap.exists()){
       const d = fsSnap.data();
       fsName  = d.name  || '';
       fsPfp   = d.pfp   || '';
       fsAbout = d.about || '';
     }
-  } catch(e){ console.warn('Firestore read failed:', e); }
+  } catch(e){ console.warn('Firestore read failed:',e); }
 
   const freshName  = fsName  || user.displayName || user.email?.split('@')[0] || 'RODSS User';
   const freshPhoto = fsPfp   || user.photoURL || '';
   const freshBio   = fsAbout;
   const freshUsername = user.email || '';
 
-  await set(ref(db, `users/${user.uid}/profile`), {
+  await set(ref(rtdb,`users/${user.uid}/profile`), {
     name: freshName, email: user.email||'', pfp: freshPhoto,
     about: freshBio, username: freshUsername, lastSeen: Date.now()
   });
@@ -532,36 +568,24 @@ async function saveProfile(user) {
   window._userBio       = freshBio;
   window._userUsername  = freshUsername;
 
-  syncUserPostsMeta(user.uid, freshName, freshPhoto);
+  // Sync display name / photo on existing Firestore posts
+  window._fsSyncPostsMeta(user.uid, freshName, freshPhoto);
 }
 
-async function syncUserPostsMeta(uid, name, photo) {
-  try {
-    const snap = await get(ref(db,'userPosts'));
-    if(!snap.exists()) return;
-    const updates = {};
-    snap.forEach(child => {
-      if(child.val().userId === uid){
-        updates[`userPosts/${child.key}/userName`]  = name;
-        updates[`userPosts/${child.key}/userPhoto`] = photo;
-      }
-    });
-    if(Object.keys(updates).length) await update(ref(db), updates);
-  } catch(e){ console.warn('Post meta sync failed:',e); }
-}
-
-// Live posts listener — always calls _renderUserPosts directly, no pending buffer needed
-onValue(ref(db,'userPosts'), snap => {
-  const posts=[];
-  if(snap.exists()) snap.forEach(child => posts.unshift({id:child.key,...child.val()}));
+// ── Firestore live listener for userPosts (replaces RTDB onValue) ──
+// Ordered by timestamp descending so newest posts appear first.
+const postsQuery = query(collection(fsdb,'userPosts'), orderBy('timestamp','desc'));
+onSnapshot(postsQuery, snap => {
+  const posts = [];
+  snap.forEach(d => posts.push({ id: d.id, ...d.data() }));
   window._renderUserPosts(posts);
-});
+}, err => console.error('Firestore posts listener error:',err));
 
-// Auth state
+// ── Auth state ──
 onAuthStateChanged(auth, async user => {
   if(user){
     await saveProfile(user);
-    const snap = await get(ref(db,`users/${user.uid}/bytechatLinked`));
+    const snap = await get(ref(rtdb,`users/${user.uid}/bytechatLinked`));
     window._byteChatLinked = snap.exists() ? snap.val() : false;
     window._firebaseUser   = user;
     window._renderLoggedIn(user);
@@ -573,7 +597,7 @@ onAuthStateChanged(auth, async user => {
 });
 </script>
 
-<!-- MAIN JS -->
+<!-- MAIN JS (unchanged except post upload / delete now call Firestore helpers) -->
 <script>
 // ── Utility ──
 function toggleNav(){const n=document.getElementById('byteNav');n.style.display=n.style.display==='flex'?'none':'flex';}
@@ -589,29 +613,32 @@ function switchToLogin(){closeModal('registerModal');openModal('loginModal');}
 function toggleDropdown(){document.getElementById('userDropdown').classList.toggle('open');}
 document.addEventListener('click',e=>{const a=document.getElementById('authArea');if(a&&!a.contains(e.target))document.getElementById('userDropdown')?.classList.remove('open');});
 
-// ── User Posts render — defined first so Firebase onValue always finds it ──
-window._renderUserPosts=function(posts){
-  const grid=document.getElementById('userPostsGrid');
+// ── User Posts render (called by Firestore onSnapshot) ──
+window._renderUserPosts = function(posts){
+  const grid = document.getElementById('userPostsGrid');
   if(!grid) return;
-  if(!posts||!posts.length){
+  if(!posts || !posts.length){
     grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;">No community posts yet — be the first!</div>`;
     return;
   }
   const loggedIn   = !!window._firebaseUser;
-  const currentUid = window._firebaseUser?.uid||'';
+  const currentUid = window._firebaseUser?.uid || '';
   const isAdmin    = window._firebaseUser?.email === ADMIN_EMAIL;
 
-  grid.innerHTML=posts.map(p=>{
-    const initial    = (p.userName||'?').slice(0,1).toUpperCase();
-    const safeUrl    = (p.imageUrl||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeName   = (p.userName||'Anonymous').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safePhoto  = (p.userPhoto||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeEmail  = (p.userEmail||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeUid    = (p.userId||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeId     = (p.id||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  grid.innerHTML = posts.map(p => {
+    const initial   = (p.userName||'?').slice(0,1).toUpperCase();
+    const safeUrl   = (p.imageUrl||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeName  = (p.userName||'Anonymous').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safePhoto = (p.userPhoto||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeEmail = (p.userEmail||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeUid   = (p.userId||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeId    = (p.id||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+
+    // Firestore serverTimestamp arrives as a Timestamp object; fall back gracefully
+    const ts = p.timestamp?.toMillis ? p.timestamp.toMillis() : (p.timestamp || 0);
 
     const avatarInner = p.userPhoto
-      ? `<img src="${p.userPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.outerHTML='<span style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;\'>${initial}</span>'">`
+      ? `<img src="${p.userPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.outerHTML='<span style=\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;\\'>${initial}</span>'">`
       : `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;">${initial}</span>`;
 
     const canDelete = isAdmin || (loggedIn && p.userId === currentUid);
@@ -624,17 +651,32 @@ window._renderUserPosts=function(posts){
       ? `<button class="user-post-delete-btn" onclick="deletePost('${safeId}',event)" title="Delete post">🗑</button>`
       : '';
 
-    return `<div class="user-post-card" id="post-${p.id}"><img class="post-img" src="${p.imageUrl}" alt="Post by ${p.userName||'Anonymous'}" loading="lazy" onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'" style="cursor:pointer" onclick="galleryEditClick('${safeUrl}')"><div class="user-post-meta"><div class="post-avatar-wrap user-post-avatar" onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')" title="View ${p.userName||'profile'}">${avatarInner}</div><div class="user-post-info"><div class="user-post-name" style="cursor:pointer" onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')">${p.userName||'Anonymous'}</div><div class="user-post-time">${timeAgo(p.timestamp)}</div></div><div style="display:flex;gap:4px;flex-shrink:0">${editBtn}${deleteBtn}</div></div></div>`;
+    return `<div class="user-post-card" id="post-${p.id}">
+      <img class="post-img" src="${p.imageUrl}" alt="Post by ${p.userName||'Anonymous'}" loading="lazy"
+        onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'"
+        style="cursor:pointer" onclick="galleryEditClick('${safeUrl}')">
+      <div class="user-post-meta">
+        <div class="post-avatar-wrap user-post-avatar"
+          onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')"
+          title="View ${p.userName||'profile'}">${avatarInner}</div>
+        <div class="user-post-info">
+          <div class="user-post-name" style="cursor:pointer"
+            onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')">${p.userName||'Anonymous'}</div>
+          <div class="user-post-time">${timeAgo(ts)}</div>
+        </div>
+        <div style="display:flex;gap:4px;flex-shrink:0">${editBtn}${deleteBtn}</div>
+      </div>
+    </div>`;
   }).join('');
 };
 
-// ── Auth UI render — also defined early ──
-window._renderLoggedIn=function(user){
+// ── Auth UI render ──
+window._renderLoggedIn = function(user){
   const name  = window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User';
   const photo = window._userPhotoURL||user.photoURL||'';
   document.getElementById('loggedOut').style.display='none';
   document.getElementById('loggedIn').style.display='block';
-  const avatar=document.getElementById('userAvatar');
+  const avatar = document.getElementById('userAvatar');
   if(photo){
     avatar.innerHTML=`<img src="${photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='${name.slice(0,1).toUpperCase()}'">`;
   } else { avatar.textContent=name.slice(0,1).toUpperCase(); }
@@ -645,7 +687,7 @@ window._renderLoggedIn=function(user){
   updateSyncPanel();
   renderAllGalleries();
 };
-window._renderLoggedOut=function(){
+window._renderLoggedOut = function(){
   document.getElementById('loggedOut').style.display='flex';
   document.getElementById('loggedIn').style.display='none';
   document.getElementById('userDropdown').classList.remove('open');
@@ -679,43 +721,35 @@ function openSettingsModal(){
 }
 async function saveSettings(){
   const user=window._firebaseUser; if(!user) return;
-  const name     = document.getElementById('settingsDisplayName').value.trim();
-  const bio      = document.getElementById('settingsBio').value.trim();
+  const name        = document.getElementById('settingsDisplayName').value.trim();
+  const bio         = document.getElementById('settingsBio').value.trim();
   const rawUsername = document.getElementById('settingsUsername').value.trim().replace(/^@/,'');
   const username    = rawUsername || user.email || '';
   if(!name){showToast('Display name cannot be empty.','error');return;}
   showToast('Saving…');
   try{
+    // Update RTDB profile
     await window._fbSetDB(`users/${user.uid}/profile`,{
       name, about:bio, username, email:user.email||'',
       pfp:window._userPhotoURL||'', lastSeen:Date.now()
     });
-    await window._fsSetDoc('users', user.uid, {
-      name:  name,
-      about: bio,
-      email: user.email||''
-    });
+    // Update Firestore user doc
+    await window._fsSetDoc('users', user.uid, { name, about:bio, email:user.email||'' });
+
     window._userName     = name;
     window._userBio      = bio;
     window._userUsername = username;
     document.getElementById('dropdownName').textContent = name;
-    const snap=await window._fbGetDB('userPosts');
-    if(snap&&snap.exists()){
-      const updates={};
-      snap.forEach(child=>{
-        if(child.val().userId===user.uid){
-          updates[`userPosts/${child.key}/userName`]  = name;
-          updates[`userPosts/${child.key}/userPhoto`] = window._userPhotoURL||'';
-        }
-      });
-      if(Object.keys(updates).length) await window._fbUpdateDB(updates);
-    }
+
+    // Sync name/photo on all Firestore posts by this user
+    await window._fsSyncPostsMeta(user.uid, name, window._userPhotoURL||'');
+
     showToast('Settings saved!','success');
     closeModal('settingsModal');
   } catch(e){ showToast('Save failed: '+e.message,'error'); }
 }
 
-// ── Profile view modal ──
+// ── Profile view modal (reads from RTDB profile node, unchanged) ──
 async function openProfileModal(userId, userName, userPhoto, userEmail){
   const initial=(userName||'?').slice(0,1).toUpperCase();
   const pmAvatar=document.getElementById('pmAvatar');
@@ -785,7 +819,7 @@ async function handleByteChatSync(){
   catch(e){showToast('Sync failed — check your Firebase rules.','error');}
 }
 
-// ── Gallery render ──
+// ── Gallery render (static curated images, unchanged) ──
 function renderGallery(photos,containerId,countId){
   const container=document.getElementById(containerId),countEl=document.getElementById(countId);
   if(!container)return;
@@ -870,34 +904,38 @@ renderAllGalleries();
 
 // ── Helpers ──
 function timeAgo(ts){
+  if(!ts) return 'just now';
   const diff=Date.now()-ts,m=Math.floor(diff/60000),h=Math.floor(m/60),d=Math.floor(h/24);
   if(d>0)return `${d}d ago`;if(h>0)return `${h}h ago`;if(m>0)return `${m}m ago`;return 'just now';
 }
 const ADMIN_EMAIL = 'bytestorm.corp@gmail.com';
 
+// ── Delete post — now uses Firestore deleteDoc ──
 async function deletePost(postId, evt){
   evt.stopPropagation();
   const user=window._firebaseUser;
   if(!user){showToast('Not signed in.','error');return;}
   if(!confirm('Delete this post? This cannot be undone.')) return;
   try{
-    await window._fbSetDB('userPosts/'+postId, null);
+    await window._fsDeletePost(postId);
+    // onSnapshot will automatically re-render the grid; optimistic removal below is instant UX
     const card=document.getElementById('post-'+postId);
     if(card) card.remove();
     showToast('Post deleted.','success');
   } catch(err){showToast('Delete failed: '+err.message,'error');console.error(err);}
 }
 
+// ── Upload post — now saves to Firestore via _fsAddPost ──
 async function handlePostUpload(e){
   const file=e.target.files[0]; if(!file) return;
   const user=window._firebaseUser;
   if(!user){showToast('Sign in to post images.','error');return;}
   if(!file.type.startsWith('image/')){showToast('Please select an image file.','error');return;}
 
-  const localUrl=URL.createObjectURL(file);
   showToast('Uploading…');
 
   try{
+    // 1. Upload image to Cloudinary
     const formData=new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'BYTEPIC');
@@ -906,36 +944,33 @@ async function handlePostUpload(e){
     let cld;
     try{ cld=JSON.parse(text); }
     catch(je){ throw new Error('Cloudinary response was not JSON. Status: '+res.status); }
-
     if(cld.error){ throw new Error('Cloudinary error: '+cld.error.message); }
     if(!cld.secure_url){ throw new Error('Cloudinary gave no URL.'); }
 
-    const imageUrl=cld.secure_url;
     showToast('Saving post…');
 
-    const postData={
-      imageUrl,
-      userName:window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User',
-      userPhoto:window._userPhotoURL||'',
-      userEmail:user.email||'',
-      userId:user.uid,
-      timestamp:Date.now()
+    // 2. Save post document to Firestore (timestamp added server-side)
+    const postData = {
+      imageUrl:  cld.secure_url,
+      userName:  window._userName || user.displayName || user.email?.split('@')[0] || 'RODSS User',
+      userPhoto: window._userPhotoURL || '',
+      userEmail: user.email || '',
+      userId:    user.uid
+      // NOTE: timestamp is added by _fsAddPost via serverTimestamp()
     };
-    const pushResult=await window._fbPushDB('userPosts', postData);
-    console.log('Post saved with key:', pushResult?.key);
+    const docRef = await window._fsAddPost(postData);
+    console.log('Post saved to Firestore with id:', docRef?.id);
 
-    URL.revokeObjectURL(localUrl);
     showToast('Post shared!','success');
     document.getElementById('postImageInput').value='';
   } catch(err){
-    URL.revokeObjectURL(localUrl);
     document.getElementById('postImageInput').value='';
     console.error('Upload error:', err);
     showToast(err.message,'error');
   }
 }
 
-// ── Photo Editor ──
+// ── Photo Editor (unchanged) ──
 let editorImg=null,editorRotation=0,editorFlipH=false,editorFlipV=false;
 function openEditorWithImage(url){
   const img=new Image();img.crossOrigin='anonymous';
