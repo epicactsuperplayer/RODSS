@@ -108,7 +108,7 @@
     .crop-btn{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid #374151;background:#1a1a1a;color:#6b7280;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
     .crop-btn:hover,.crop-btn.active{border-color:#9ca3af;color:#e5e7eb}
 
-    .user-post-card{background:#111;border:1px solid #374151;border-radius:14px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+    .user-post-card{background:#111;border:1px solid #374151;border-radius:14px;overflow:hidden;transition:transform .3s,box-shadow .3s;min-width:0;width:100%;box-sizing:border-box;}
     .user-post-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(255,255,255,.08)}
     .user-post-card>.post-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
     .user-post-meta{padding:10px 12px;display:flex;align-items:center;gap:10px}
@@ -849,6 +849,11 @@ const ADMIN_EMAIL = 'bytestorm.corp@gmail.com';
 
 window._renderUserPosts=function(posts){
   const grid=document.getElementById('userPostsGrid');
+  // Force grid layout via JS so no CSS cascade can override it
+  grid.style.cssText='display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;width:100%;';
+  if(window.innerWidth>=1280) grid.style.gridTemplateColumns='repeat(5,minmax(0,1fr))';
+  else if(window.innerWidth>=1024) grid.style.gridTemplateColumns='repeat(4,minmax(0,1fr))';
+  else if(window.innerWidth>=640) grid.style.gridTemplateColumns='repeat(3,minmax(0,1fr))';
   if(!posts||!posts.length){
     grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;">No community posts yet — be the first!</div>`;
     return;
