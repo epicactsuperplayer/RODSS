@@ -110,7 +110,7 @@
 
     .user-post-card{background:#111;border:1px solid #374151;border-radius:14px;overflow:hidden;transition:transform .3s,box-shadow .3s}
     .user-post-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(255,255,255,.08)}
-    .user-post-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+    .user-post-card>.post-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
     .user-post-meta{padding:10px 12px;display:flex;align-items:center;gap:10px}
     .user-post-avatar{width:28px;height:28px;border-radius:50%;background:#fff;color:#000;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
     .user-post-avatar img{width:100%;height:100%;object-fit:cover}
@@ -155,7 +155,7 @@
     .settings-danger-btn:hover{background:rgba(248,113,113,.1)}
 
     /* Clickable avatar on posts */
-    .post-avatar-wrap{cursor:pointer;flex-shrink:0;transition:opacity .2s}
+    .post-avatar-wrap{cursor:pointer;flex-shrink:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
     .post-avatar-wrap:hover{opacity:.75}
   </style>
 </head>
@@ -878,7 +878,7 @@ window._renderUserPosts=function(posts){
 
     return `
       <div class="user-post-card" id="post-${p.id}">
-        <img src="${p.imageUrl}" alt="Post by ${p.userName||'Anonymous'}" loading="lazy"
+        <img class="post-img" src="${p.imageUrl}" alt="Post by ${p.userName||'Anonymous'}" loading="lazy"
              onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'"
              style="cursor:pointer" onclick="galleryEditClick('${safeUrl}')">
         <div class="user-post-meta">
