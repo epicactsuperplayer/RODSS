@@ -505,7 +505,6 @@ window._fsSetDoc        = (col,id,data) => setDoc(doc(fsdb,col,id),data,{merge:t
 
 // Save profile — reads ByteChat Firestore as source of truth
 async function saveProfile(user) {
-  // ByteChat uses: name, pfp, about, email in Firestore users/{uid}
   let fsName='', fsPfp='', fsAbout='';
   try {
     const fsSnap = await getDoc(doc(fsdb, 'users', user.uid));
@@ -520,7 +519,6 @@ async function saveProfile(user) {
   const freshName  = fsName  || user.displayName || user.email?.split('@')[0] || 'RODSS User';
   const freshPhoto = fsPfp   || user.photoURL || '';
   const freshBio   = fsAbout;
-  // Username is always the Gmail address (ByteChat uses email as identifier)
   const freshUsername = user.email || '';
 
   await set(ref(db, `users/${user.uid}/profile`), {
@@ -610,8 +608,7 @@ function openSettingsModal(){
   document.getElementById('userDropdown').classList.remove('open');
   document.getElementById('settingsDisplayName').value = window._userName||'';
   document.getElementById('settingsBio').value         = window._userBio||'';
-  // Pre-fill username with Gmail if none set yet
-  document.getElementById('settingsUsername').value    = window._userUsername || user.email || '';
+  document.getElementById('settingsUsername').value    = window._userUsername || window._firebaseUser.email || '';
   document.getElementById('settingsEmailDisplay').textContent = window._firebaseUser.email||'';
   openModal('settingsModal');
 }
@@ -619,29 +616,24 @@ async function saveSettings(){
   const user=window._firebaseUser; if(!user) return;
   const name     = document.getElementById('settingsDisplayName').value.trim();
   const bio      = document.getElementById('settingsBio').value.trim();
-  // Username: strip leading @, fall back to Gmail if empty
   const rawUsername = document.getElementById('settingsUsername').value.trim().replace(/^@/,'');
   const username    = rawUsername || user.email || '';
   if(!name){showToast('Display name cannot be empty.','error');return;}
   showToast('Saving…');
   try{
-    // Write to Realtime DB (RODSS)
     await window._fbSetDB(`users/${user.uid}/profile`,{
       name, about:bio, username, email:user.email||'',
       pfp:window._userPhotoURL||'', lastSeen:Date.now()
     });
-    // Write to Firestore using ByteChat's exact field names: name, pfp, about
     await window._fsSetDoc('users', user.uid, {
       name:  name,
       about: bio,
       email: user.email||''
-      // pfp is managed by Cloudinary upload, not changed here
     });
     window._userName     = name;
     window._userBio      = bio;
     window._userUsername = username;
     document.getElementById('dropdownName').textContent = name;
-    // Sync updated name on all existing posts
     const snap=await window._fbGetDB('userPosts');
     if(snap&&snap.exists()){
       const updates={};
@@ -676,7 +668,6 @@ async function openProfileModal(userId, userName, userPhoto, userEmail){
     if(snap&&snap.exists()){
       const d=snap.val();
       document.getElementById('pmBio').textContent      = d.bio||'No bio set.';
-      // Show username, fall back to Gmail (which is always stored as the default username)
       document.getElementById('pmUsername').textContent = d.username ? (d.username.includes('@') ? d.username : '@'+d.username) : (d.email||'—');
       if(d.lastSeen){
         document.getElementById('pmJoined').textContent=new Date(d.lastSeen).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
@@ -847,13 +838,9 @@ function timeAgo(ts){
 
 const ADMIN_EMAIL = 'bytestorm.corp@gmail.com';
 
+// ── FIX: removed cssText overwrite — CSS handles the responsive grid layout ──
 window._renderUserPosts=function(posts){
   const grid=document.getElementById('userPostsGrid');
-  // Force grid layout via JS so no CSS cascade can override it
-  grid.style.cssText='display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;width:100%;';
-  if(window.innerWidth>=1280) grid.style.gridTemplateColumns='repeat(5,minmax(0,1fr))';
-  else if(window.innerWidth>=1024) grid.style.gridTemplateColumns='repeat(4,minmax(0,1fr))';
-  else if(window.innerWidth>=640) grid.style.gridTemplateColumns='repeat(3,minmax(0,1fr))';
   if(!posts||!posts.length){
     grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;">No community posts yet — be the first!</div>`;
     return;
@@ -875,7 +862,6 @@ window._renderUserPosts=function(posts){
       ? `<img src="${p.userPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.outerHTML='<span style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;\'>${initial}</span>'">`
       : `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;">${initial}</span>`;
 
-    // Can delete: admin can delete any post, owners can delete their own
     const canDelete = isAdmin || (loggedIn && p.userId === currentUid);
 
     const editBtn = loggedIn
@@ -897,7 +883,6 @@ async function deletePost(postId, evt){
   if(!confirm('Delete this post? This cannot be undone.')) return;
   try{
     await window._fbSetDB('userPosts/'+postId, null);
-    // Remove card from DOM immediately for snappy UX
     const card=document.getElementById('post-'+postId);
     if(card) card.remove();
     showToast('Post deleted.','success');
@@ -910,18 +895,15 @@ async function handlePostUpload(e){
   if(!user){showToast('Sign in to post images.','error');return;}
   if(!file.type.startsWith('image/')){showToast('Please select an image file.','error');return;}
 
-  // Show preview immediately so user knows something is happening
   const localUrl=URL.createObjectURL(file);
   showToast('Uploading…');
 
   try{
-    // Step 1: Upload to Cloudinary
     const formData=new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'BYTEPIC');
-    // Do NOT append cloud_name to body — it causes issues with some presets
     const res=await fetch('https://api.cloudinary.com/v1_1/detawwram/image/upload',{method:'POST',body:formData});
-    const text=await res.text(); // read as text first to avoid JSON parse crash
+    const text=await res.text();
     let cld;
     try{ cld=JSON.parse(text); }
     catch(je){ throw new Error('Cloudinary response was not JSON. Status: '+res.status); }
@@ -932,7 +914,6 @@ async function handlePostUpload(e){
     const imageUrl=cld.secure_url;
     showToast('Saving post…');
 
-    // Step 2: Push unique entry to Firebase Realtime DB
     const postData={
       imageUrl,
       userName:window._userName||user.displayName||user.email?.split('@')[0]||'RODSS User',
@@ -950,7 +931,6 @@ async function handlePostUpload(e){
   } catch(err){
     URL.revokeObjectURL(localUrl);
     console.error('Upload error full:', err);
-    // Show the actual error so you can debug
     showToast(err.message,'error');
   }
 }
