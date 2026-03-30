@@ -157,6 +157,10 @@
     /* Clickable avatar on posts */
     .post-avatar-wrap{cursor:pointer;flex-shrink:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
     .post-avatar-wrap:hover{opacity:.75}
+    #userPostsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;}
+    @media(min-width:640px){#userPostsGrid{grid-template-columns:repeat(3,1fr)}}
+    @media(min-width:1024px){#userPostsGrid{grid-template-columns:repeat(4,1fr)}}
+    @media(min-width:1280px){#userPostsGrid{grid-template-columns:repeat(5,1fr)}}
   </style>
 </head>
 <body class="min-h-screen">
@@ -286,7 +290,7 @@
       <div class="login-gate-sub">Sign in or create a free account to share photos with the community.</div>
       <button class="login-gate-btn" onclick="openModal('loginModal')">Sign In to Post</button>
     </div>
-    <div id="userPostsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+    <div id="userPostsGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;">
       <div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7280;font-size:14px;">No community posts yet — be the first!</div>
     </div>
   </section>
@@ -645,7 +649,12 @@ async function saveSettings(){
     const snap=await window._fbGetDB('userPosts');
     if(snap&&snap.exists()){
       const updates={};
-      snap.forEach(child=>{if(child.val().userId===user.uid) updates[`userPosts/${child.key}/userName`]=name;});
+      snap.forEach(child=>{
+        if(child.val().userId===user.uid){
+          updates[`userPosts/${child.key}/userName`]  = name;
+          updates[`userPosts/${child.key}/userPhoto`] = window._userPhotoURL||'';
+        }
+      });
       if(Object.keys(updates).length) await window._fbUpdateDB(updates);
     }
     showToast('Settings saved!','success');
@@ -862,8 +871,8 @@ window._renderUserPosts=function(posts){
     const safeId     = (p.id||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 
     const avatarInner = p.userPhoto
-      ? `<img src="${p.userPhoto}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`
-      : initial;
+      ? `<img src="${p.userPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.outerHTML='<span style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;\'>${initial}</span>'">`
+      : `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:700;">${initial}</span>`;
 
     // Can delete: admin can delete any post, owners can delete their own
     const canDelete = isAdmin || (loggedIn && p.userId === currentUid);
