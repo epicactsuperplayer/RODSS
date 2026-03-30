@@ -876,30 +876,7 @@ window._renderUserPosts=function(posts){
       ? `<button class="user-post-delete-btn" onclick="deletePost('${safeId}',event)" title="Delete post">🗑</button>`
       : '';
 
-    return `
-      <div class="user-post-card" id="post-${p.id}">
-        <img class="post-img" src="${p.imageUrl}" alt="Post by ${p.userName||'Anonymous'}" loading="lazy"
-             onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'"
-             style="cursor:pointer" onclick="galleryEditClick('${safeUrl}')">
-        <div class="user-post-meta">
-          <div class="post-avatar-wrap user-post-avatar"
-               onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')"
-               title="View ${p.userName||'profile'}">
-            ${avatarInner}
-          </div>
-          <div class="user-post-info">
-            <div class="user-post-name" style="cursor:pointer"
-                 onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')">
-              ${p.userName||'Anonymous'}
-            </div>
-            <div class="user-post-time">${timeAgo(p.timestamp)}</div>
-          </div>
-          <div style="display:flex;gap:4px;flex-shrink:0">
-            ${editBtn}
-            ${deleteBtn}
-          </div>
-        </div>
-      </div>`;
+    return `<div class="user-post-card" id="post-${p.id}"><img class="post-img" src="${p.imageUrl}" alt="Post by ${p.userName||'Anonymous'}" loading="lazy" onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'" style="cursor:pointer" onclick="galleryEditClick('${safeUrl}')"><div class="user-post-meta"><div class="post-avatar-wrap user-post-avatar" onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')" title="View ${p.userName||'profile'}">${avatarInner}</div><div class="user-post-info"><div class="user-post-name" style="cursor:pointer" onclick="openProfileModal('${safeUid}','${safeName}','${safePhoto}','${safeEmail}')">${p.userName||'Anonymous'}</div><div class="user-post-time">${timeAgo(p.timestamp)}</div></div><div style="display:flex;gap:4px;flex-shrink:0">${editBtn}${deleteBtn}</div></div></div>`;
   }).join('');
 };
 
