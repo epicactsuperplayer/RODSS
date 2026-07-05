@@ -829,7 +829,10 @@ function renderGallery(photos,containerId,countId){
     <div class="gallery-item" onclick="galleryEditClick('${p.url}')">
       <img src="${p.url}" alt="${p.alt}" loading="lazy" onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'">
       ${loggedIn
-        ?`<div class="edit-overlay"><button class="edit-overlay-btn">Edit Photo</button></div>`
+        ?`<div class="edit-overlay">
+            <button class="edit-overlay-btn">Edit Photo</button>
+            <button class="edit-overlay-btn" style="margin-top:6px" onclick="event.stopPropagation();downloadOriginal('${p.url}','${p.alt}')">⬇ Download</button>
+          </div>`
         :`<div class="edit-overlay-locked"><span class="lock-icon">🔒</span><span class="lock-label">Sign in to edit</span></div>`
       }
     </div>`).join('');
@@ -970,13 +973,56 @@ async function handlePostUpload(e){
   }
 }
 
-// ── Photo Editor (unchanged) ──
+// ── Photo Editor ──
+// Some image hosts (Pinterest, DigitalTrends, etc.) don't send CORS headers,
+// which blocks canvas-based editing/downloading. When a direct load fails,
+// we retry through a read-only CORS proxy that re-serves the same image with
+// the right headers. Original URLs/galleries are never changed or removed.
+function corsProxyUrl(url){
+  const stripped=url.replace(/^https?:\/\//i,'');
+  return 'https://images.weserv.nl/?url='+encodeURIComponent(stripped);
+}
 let editorImg=null,editorRotation=0,editorFlipH=false,editorFlipV=false;
 function openEditorWithImage(url){
+  const finish=(img)=>{editorImg=img;editorRotation=0;editorFlipH=false;editorFlipV=false;resetSliders();document.getElementById('noImgMsg').style.display='none';drawCanvas();};
   const img=new Image();img.crossOrigin='anonymous';
-  img.onload=()=>{editorImg=img;editorRotation=0;editorFlipH=false;editorFlipV=false;resetSliders();document.getElementById('noImgMsg').style.display='none';drawCanvas();};
-  img.onerror=()=>showToast('Could not load image (CORS restriction).','error');
+  img.onload=()=>finish(img);
+  img.onerror=()=>{
+    // Fallback: fetch via CORS proxy so the canvas doesn't get tainted
+    const proxied=new Image();proxied.crossOrigin='anonymous';
+    proxied.onload=()=>finish(proxied);
+    proxied.onerror=()=>showToast('Could not load this image for editing.','error');
+    proxied.src=corsProxyUrl(url);
+  };
   img.src=url;
+}
+async function downloadOriginal(url,alt){
+  const filename=(alt||'image').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')+'.jpg';
+  try{
+    // Try the direct URL first
+    const resp=await fetch(url,{mode:'cors'});
+    if(!resp.ok) throw new Error('direct fetch failed');
+    const blob=await resp.blob();
+    triggerBlobDownload(blob,filename);
+  }catch(e){
+    try{
+      // Fallback: fetch through the CORS proxy
+      const resp2=await fetch(corsProxyUrl(url));
+      if(!resp2.ok) throw new Error('proxy fetch failed');
+      const blob2=await resp2.blob();
+      triggerBlobDownload(blob2,filename);
+    }catch(e2){
+      showToast('Download failed. Try again or open the Photo Editor.','error');
+    }
+  }
+}
+function triggerBlobDownload(blob,filename){
+  const link=document.createElement('a');
+  link.href=URL.createObjectURL(blob);
+  link.download=filename;
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(link.href),4000);
+  showToast('Image downloaded!','success');
 }
 function loadUploadedImage(e){
   if(!window._firebaseUser){showToast('Sign in to use the Photo Editor.','error');openModal('loginModal');return;}
