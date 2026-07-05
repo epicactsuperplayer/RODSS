@@ -474,6 +474,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut as fbSignOut,
          GoogleAuthProvider, OAuthProvider, signInWithPopup,
+         signInWithRedirect, getRedirectResult,
          createUserWithEmailAndPassword, signInWithEmailAndPassword,
          updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
@@ -504,12 +505,30 @@ const fsdb  = getFirestore(app);
 // ── Expose RTDB helpers (profile + bytechatLinked only) ──
 window._fbSignOut       = () => fbSignOut(auth);
 window._fbLoginGoogle   = async () => { const p=new GoogleAuthProvider(); p.setCustomParameters({prompt:'select_account'}); return signInWithPopup(auth,p); };
-window._fbLoginApple    = async () => { const p=new OAuthProvider('apple.com'); p.addScope('email'); p.addScope('name'); return signInWithPopup(auth,p); };
+// Apple + Safari/iOS: signInWithPopup breaks due to Safari's storage/tracking
+// restrictions on the popup window, which is why Apple users hit an error
+// while Google users don't. signInWithRedirect avoids that entirely.
+window._fbLoginApple    = async () => { const p=new OAuthProvider('apple.com'); p.addScope('email'); p.addScope('name'); return signInWithRedirect(auth,p); };
 window._fbEmailLogin    = (e,p) => signInWithEmailAndPassword(auth,e,p);
 window._fbEmailRegister = (e,p) => createUserWithEmailAndPassword(auth,e,p);
 window._fbUpdateProfile = (u,d) => updateProfile(u,d);
 window._fbSetDB         = (path,val) => set(ref(rtdb,path),val);
 window._fbGetDB         = (path) => get(ref(rtdb,path));
+
+// Apple's flow returns here via redirect (not a popup), so we must catch
+// the result once the page reloads after the user signs in on Apple's page.
+getRedirectResult(auth).then(result=>{
+  if(result && result.user){
+    window.dispatchEvent(new CustomEvent('bytestorm-social-login-success'));
+  }
+}).catch(e=>{
+  const code=e.code||'';
+  if(code==='auth/account-exists-with-different-credential'){
+    window.dispatchEvent(new CustomEvent('bytestorm-social-login-error',{detail:'This email is already used with a different sign-in method (e.g. Google or email/password).'}));
+  }else if(code!=='auth/no-auth-event' && code){
+    window.dispatchEvent(new CustomEvent('bytestorm-social-login-error',{detail:e.message?.replace('Firebase: ','')||'Apple sign-in failed.'}));
+  }
+});
 
 // ── Expose Firestore helpers ──
 window._fsGetDoc  = (col,id) => getDoc(doc(fsdb,col,id));
@@ -786,17 +805,30 @@ function updateSyncPanel(){
 // ── Auth actions ──
 async function socialLogin(provider){
   try{
-    const fn={google:'_fbLoginGoogle',apple:'_fbLoginApple'}[provider];
-    await window[fn]();
+    if(provider==='apple'){
+      // signInWithRedirect navigates away immediately — nothing after this line runs.
+      await window._fbLoginApple();
+      return;
+    }
+    await window._fbLoginGoogle();
     closeModal('loginModal');closeModal('registerModal');
     showToast('Signed in!','success');
   }catch(e){
     const code=e.code||'';
     if(code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request')return;
     if(code==='auth/popup-blocked'){showToast('Popup blocked — please allow popups for this site.','error');return;}
+    if(code==='auth/operation-not-allowed'){showToast('This sign-in method isn\'t enabled yet. Please try another option.','error');return;}
+    if(code==='auth/unauthorized-domain'){showToast('This domain isn\'t authorized for sign-in yet.','error');return;}
     showToast(e.message?.replace('Firebase: ','')||'Sign in failed.','error');
   }
 }
+window.addEventListener('bytestorm-social-login-success',()=>{
+  closeModal('loginModal');closeModal('registerModal');
+  showToast('Signed in!','success');
+});
+window.addEventListener('bytestorm-social-login-error',(e)=>{
+  showToast(e.detail||'Apple sign-in failed.','error');
+});
 async function emailLogin(){
   const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPassword').value;
   if(!email||!pass){showToast('Please fill in all fields.','error');return;}
@@ -829,10 +861,7 @@ function renderGallery(photos,containerId,countId){
     <div class="gallery-item" onclick="galleryEditClick('${p.url}')">
       <img src="${p.url}" alt="${p.alt}" loading="lazy" onerror="this.src='https://placehold.co/400x400/1a1a1a/444?text=FAILED'">
       ${loggedIn
-        ?`<div class="edit-overlay">
-            <button class="edit-overlay-btn">Edit Photo</button>
-            <button class="edit-overlay-btn" style="margin-top:6px" onclick="event.stopPropagation();downloadOriginal('${p.url}','${p.alt}')">⬇ Download</button>
-          </div>`
+        ?`<div class="edit-overlay"><button class="edit-overlay-btn">Edit Photo</button></div>`
         :`<div class="edit-overlay-locked"><span class="lock-icon">🔒</span><span class="lock-label">Sign in to edit</span></div>`
       }
     </div>`).join('');
