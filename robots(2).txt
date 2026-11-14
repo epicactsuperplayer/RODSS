@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rodss.vercel.app/sitemap.xml
